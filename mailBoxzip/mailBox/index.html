@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ksk's inbox</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="envelope-container">
+            <div class="envelope">
+                <div class="back"></div>
+                <div class="front-flap"></div>
+                <div class="top-flap"></div>
+            </div>
+        </div>
+        <div class="confetti-container" id="confetti-container"></div>
+        <h1 id="inbox-name">ksk's inbox</h1>
+    </div>
+
+    <div id="main-content-wrapper" class="hidden">
+        <div class="container" id="main-container">
+            
+            <!-- LEFT PROFILE SIDEBAR -->
+            <aside class="profile-sidebar" id="profile-sidebar">
+                <div class="sidebar-header">
+                    <button class="toggle-btn" id="toggle-btn">
+                        <span class="material-icons">menu</span>
+                    </button>
+                    
+
+                </div>
+
+                <div class="sidebar-content">
+                    <div class="profile-info">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1144/1144760.png" alt="Profile" class="my-profile-photo">
+                        <h3 class="my-name">KASAK</h3>
+                        <span class="my-email">kasak.2520@college.edu</span>
+                    </div>
+
+                    <div class="profile-actions">
+                        <a href="#" class="profile-btn" data-action="my-account">
+                            <span class="material-icons">account_circle</span>
+                            <span>My Account</span>
+                        </a>
+                        <a href="#" class="profile-btn" data-action="settings">
+                            <span class="material-icons">settings</span>
+                            <span>Settings</span>
+                        </a>
+                        <a href="#" class="profile-btn" data-action="sign-out">
+                            <span class="material-icons">logout</span>
+                            <span>Sign out</span>
+                        </a>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <main class="main-content">
+                <header class="main-header">
+                    <div class="top-bar">
+                        <button class="action-btn" id="delete-btn" title="Delete">
+                            <span class="material-icons">delete_outline</span>
+                        </button>
+                        <button class="action-btn" id="archive-btn" title="Archive">
+                            <span class="material-icons">archive</span>
+                        </button>
+                        <button class="action-btn" id="spam-btn" title="Report Spam">
+                            <span class="material-icons">report</span>
+                        </button>
+                        <button class="back-btn hidden" id="back-btn" title="Go back to inbox">
+                            <span class="material-icons">arrow_back</span>
+                        </button>
+                        <button id="mark-unread" class="action-btn">
+                            <span class="material-icons">mark_email_unread</span>
+                        </button>
+
+                    </div>
+
+                    <div class="search-bar-container">
+    <span class="material-icons search-icon">search</span>
+    <input type="text" id="search-input" placeholder="Search mail">
+
+    <!-- FILTER BUTTON GOES HERE -->
+    <div class="filter-wrapper">
+        <button id="filter-btn" class="filter-btn">
+            <span class="material-icons">filter_list</span>
+        </button>
+
+        <div id="filter-menu" class="filter-menu hidden">
+            <div class="filter-item" data-filter="unread">Unread</div>
+            <div class="filter-item" data-filter="all">All mails</div>
+            <div class="filter-item" data-filter="newest">Newest First</div>
+            <div class="filter-item" data-filter="oldest">Oldest First</div>
+
+        </div>
+    </div>
+</div>
+
+                </header>
+
+                <!-- EMAIL LIST -->
+                <div class="email-list" id="email-list"></div>
+
+                <!-- EMAIL DETAIL VIEW -->
+                <div class="email-detail-view hidden" id="email-detail-view">
+                    <h2 id="detail-subject"></h2>
+                    <div class="email-detail-header">
+                        <img id="detail-photo" class="sender-photo" src="" alt="Sender Photo">
+                        <div class="sender-info">
+                            <span id="detail-sender"></span>
+                            <span id="detail-date"></span>
+                        </div>
+                    </div>
+                    <div id="detail-body"></div>
+                </div>
+
+                <!-- PAGINATION (MOVED INSIDE MAIN CONTENT) -->
+                <div id="pagination" class="pagination"></div>
+
+            </main>
+
+            <!-- RIGHT NAVIGATION SIDEBAR -->
+            <aside class="nav-sidebar">
+                <nav>
+                    <a href="#" class="nav-item active" data-folder="inbox">
+                        <span class="material-icons">inbox</span>
+                        <span>Inbox</span>
+                    </a>
+                    <a href="#" class="nav-item" data-folder="starred">
+                        <span class="material-icons">star</span>
+                        <span>Starred</span>
+                    </a>
+                    <a href="#" class="nav-item" data-folder="important">
+                        <span class="material-icons">label_important</span>
+                        <span>Important</span>
+                    </a>
+                    <a href="#" class="nav-item" data-folder="academic">
+                        <span class="material-icons">school</span>
+                        <span>Academic</span>
+                    </a>
+                    <a href="#" class="nav-item" data-folder="shipment">
+                        <span class="material-icons">local_shipping</span>
+                        <span>Shipment</span>
+                    </a>
+                    <a href="#" class="nav-item" data-folder="promotional">
+                        <span class="material-icons">local_offer</span>
+                        <span>Promotional</span>
+                    </a>
+                    <a href="#" class="nav-item" data-folder="trash">
+                        <span class="material-icons">delete</span>
+                        <span>Trash</span>
+                    </a>
+                    <a href="#" class="nav-item" data-folder="spam">
+                        <span class="material-icons">report</span>
+                        <span>Spam</span>
+                    </a>
+                </nav>
+            </aside>
+
+        </div>
+    </div>
+    
+    <!-- FLOATING COMPOSE BUTTON -->
+    <div class="compose-btn-float" id="compose-btn">
+        <span class="material-icons">edit</span>
+        <span>Draw Up</span>
+    </div>
+
+    <!-- MAIN SCRIPT -->
+    <script src="script.js"></script>
+
+</body>
+</html>

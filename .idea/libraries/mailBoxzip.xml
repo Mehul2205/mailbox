@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="mailBoxzip">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/mailBoxzip.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
