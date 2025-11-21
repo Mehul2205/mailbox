@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const profileSidebar = document.getElementById('profile-sidebar');
     const mainContainer = document.getElementById('main-container');
     const composeBtn = document.getElementById('compose-btn');
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
 
     // runtime state
     let allEmails = [];          // full email list
@@ -47,6 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentFolder = 'inbox';
     let currentPage = 1;
     let currentSort = 'default'; // track current sorting method
+
+    // Initialize dark mode from localStorage
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+    }
 
     // Ensure pagination container exists (if not present in HTML, create it)
     let paginationContainer = document.getElementById('pagination');
@@ -736,6 +743,15 @@ Delivery Services`
     /* =========================
        KEYBOARD SHORTCUTS (small set)
     ========================= */
+    // Theme toggle
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        });
+    }
+
     document.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.key === 'g') { // ctrl+g go inbox
             const inboxNav = document.querySelector('.nav-item[data-folder="inbox"]');
