@@ -1,0 +1,2514 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+% Configure listings for Python
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4,
+    numberstyle=\tiny\color{gray},
+    numbers=left,
+    frame=single,
+    backgroundcolor=\color{white!95!black}
+}
+
+% Define screenshot placeholder macro
+\newcounter{screenshotcounter}
+\setcounter{screenshotcounter}{0}
+\newcommand{\screenshotplaceholder}{
+    \stepcounter{screenshotcounter}
+    \vspace{0.3cm}
+    \textbf{Screenshot Output:} \\
+    \fbox{\parbox[c][2.5cm]{0.95\textwidth}{\centering\textit{[Insert screenshot-\padded{\thescreenshotcounter}{3}.png here]}\vfill}}
+    \vspace{0.3cm}
+}
+
+\newcommand{\padded}[2]{%
+    \ifnum#1<10 00#1\else\ifnum#1<100 0#1\else#1\fi\fi
+}
+
+\pagestyle{fancy}
+\fancyhead[L]{Laboratory Solutions}
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{\textit{Number Theory and Cryptography}}
+
+\title{\textbf{Laboratory Solutions} \\ \large Number Theory and Cryptography}
+\author{}
+\date{\today}
+
+\begin{document}
+
+% ==================== FRONT PAGE ====================
+\thispagestyle{empty}
+\begin{center}
+\vspace*{2cm}
+
+{\Huge \textbf{Number Theory and Cryptography}}\\
+{\huge \textbf{LAB Report}}
+
+\vspace{3cm}
+
+% NIT Karnataka Logo
+\includegraphics[width=3cm,height=3cm,keepaspectratio]{logo.png}
+
+\vspace{2.5cm}
+
+{\LARGE \textbf{KASAK ( 252IS018 )}}\\
+\vspace{0.5cm}
+{\large \textit{I SEMESTER M-TECH CSIS}}
+
+\vspace{3cm}
+
+{\large \textbf{DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING}}\\
+\vspace{0.3cm}
+{\large \textbf{NATIONAL INSTITUTE OF TECHNOLOGY KARNATAKA}}\\
+\vspace{0.3cm}
+{\large \textbf{SURATHKAL}}
+
+\vspace{2cm}
+
+{\Large \textbf{2025-26}}
+
+\vspace*{\fill}
+
+\end{center}
+
+\newpage
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ==================== LAB-1 ====================
+\section{LAB-1: Introduction to Python and Number Theory Basics}
+
+\subsection{Question 1: Installation of Python}
+\textbf{Description:} Installation of Python on Windows or Linux operating systems.
+
+\textbf{Answer:} 
+Python can be installed from \url{https://www.python.org/downloads/}. Choose the appropriate version for your operating system and follow the installation wizard.
+
+\subsection{Question 2: Print "Hello World"}
+\textbf{Description:} Write a Python program to print "Hello World".
+
+\begin{lstlisting}
+# Simple Hello World Program
+print("Hello World")
+\end{lstlisting}
+
+\textbf{Screenshot Output:} \\
+\fbox{\parbox[c][2.5cm]{0.95\textwidth}{\centering\textit{[Insert screenshot-001.png here]}\vfill}}
+
+\vspace{0.5cm}
+
+\subsection{Question 3: Check Divisibility}
+\textbf{Description:} Write a Python program to find whether $b \mid a$, where $b \neq 0$, and $a$ and $b$ are some integers.
+
+\begin{lstlisting}
+def check_divisibility(a, b):
+    """
+    Check whether b divides a (b | a)
+    
+    Args:
+        a: First integer
+        b: Second integer (b != 0)
+    
+    Returns:
+        True if b divides a, False otherwise
+    """
+    if b == 0:
+        return False
+    return a % b == 0
+
+# Example usage
+a = 20
+b = 5
+if check_divisibility(a, b):
+    print(f"{b} divides {a}")
+else:
+    print(f"{b} does not divide {a}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 4: Find GCD}
+\textbf{Description:} Write a Python program to find the gcd $(a, b) = \max \{d \in \mathbb{Z} : d \mid a \text{ and } d \mid b\}$.
+
+\begin{lstlisting}
+def find_gcd(a, b):
+    """
+    Find the Greatest Common Divisor of two numbers
+    
+    Args:
+        a: First integer
+        b: Second integer
+    
+    Returns:
+        GCD of a and b
+    """
+    a, b = abs(a), abs(b)
+    while b != 0:
+        a, b = b, a % b
+    return a
+
+# Example usage
+a = 56
+b = 98
+gcd = find_gcd(a, b)
+print(f"GCD of {a} and {b} is {gcd}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\newpage
+
+% ==================== LAB-2 ====================
+\section{LAB-2: Euclidean Algorithm and Divisors}
+
+\subsection{Question 1: Euclidean Algorithm for GCD}
+\textbf{Description:} Write a Python program to find the Greatest Common Divisor of two numbers using the Euclidean Algorithm.
+
+\begin{lstlisting}
+def euclidean_gcd(a, b):
+    """
+    Find GCD using Euclidean Algorithm
+    
+    Args:
+        a: First integer
+        b: Second integer
+    
+    Returns:
+        GCD of a and b
+    """
+    a, b = abs(a), abs(b)
+    while b != 0:
+        remainder = a % b
+        a = b
+        b = remainder
+    return a
+
+# Example usage
+a = 270
+b = 192
+result = euclidean_gcd(a, b)
+print(f"GCD of {a} and {b} is {result}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 2: Extended Euclidean Algorithm}
+\textbf{Description:} Write a Python program to implement the Extended Euclidean Algorithm.
+
+\begin{lstlisting}
+def extended_euclidean_algorithm(a, b):
+    """
+    Extended Euclidean Algorithm
+    Returns gcd(a,b) and coefficients x, y such that:
+    a*x + b*y = gcd(a,b)
+    
+    Args:
+        a: First integer
+        b: Second integer
+    
+    Returns:
+        Tuple (gcd, x, y)
+    """
+    if b == 0:
+        return a, 1, 0
+    
+    x0, x1 = 1, 0
+    y0, y1 = 0, 1
+    
+    while b != 0:
+        q = a // b
+        a, b = b, a % b
+        x0, x1 = x1, x0 - q * x1
+        y0, y1 = y1, y0 - q * y1
+    
+    return a, x0, y0
+
+# Example usage
+a = 30
+b = 18
+gcd, x, y = extended_euclidean_algorithm(a, b)
+print(f"GCD of {a} and {b} is {gcd}")
+print(f"Coefficients: x = {x}, y = {y}")
+print(f"Verification: {a}*{x} + {b}*{y} = {a*x + b*y}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 3: Numbers with K Odd Divisors}
+\textbf{Description:} Find numbers with K odd divisors in any given range.
+
+\begin{lstlisting}
+def count_odd_divisors(n):
+    """
+    Count the number of odd divisors of n
+    
+    Args:
+        n: Integer number
+    
+    Returns:
+        Count of odd divisors
+    """
+    count = 0
+    for i in range(1, int(n**0.5) + 1):
+        if n % i == 0:
+            if i % 2 == 1:
+                count += 1
+            if i != n // i and (n // i) % 2 == 1:
+                count += 1
+    return count
+
+def find_numbers_with_k_odd_divisors(a, b, k):
+    """
+    Find all numbers in range [a, b] with exactly k odd divisors
+    
+    Args:
+        a: Start of range
+        b: End of range
+        k: Number of odd divisors
+    
+    Returns:
+        List of numbers with k odd divisors
+    """
+    result = []
+    for num in range(a, b + 1):
+        if count_odd_divisors(num) == k:
+            result.append(num)
+    return result
+
+# Example usage
+a, b, k = 2, 49, 3
+numbers = find_numbers_with_k_odd_divisors(a, b, k)
+print(f"Numbers in range [{a}, {b}] with {k} odd divisors:")
+print(f"Count: {len(numbers)}")
+print(f"Numbers: {numbers}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 4: Numbers with N Divisors}
+\textbf{Description:} Find numbers with n divisors in a given range.
+
+\begin{lstlisting}
+def count_divisors(n):
+    """
+    Count total number of divisors of n
+    
+    Args:
+        n: Integer number
+    
+    Returns:
+        Total count of divisors
+    """
+    count = 0
+    for i in range(1, int(n**0.5) + 1):
+        if n % i == 0:
+            count += 1 if i * i == n else 2
+    return count
+
+def find_numbers_with_n_divisors(a, b, n):
+    """
+    Find all numbers in range [a, b] with exactly n divisors
+    
+    Args:
+        a: Start of range
+        b: End of range
+        n: Number of divisors required
+    
+    Returns:
+        List of numbers with n divisors
+    """
+    result = []
+    for num in range(a, b + 1):
+        if count_divisors(num) == n:
+            result.append(num)
+    return result
+
+# Example usage
+a, b, n = 1, 7, 2
+numbers = find_numbers_with_n_divisors(a, b, n)
+print(f"Numbers in range [{a}, {b}] with {n} divisors:")
+print(f"Count: {len(numbers)}")
+print(f"Numbers: {numbers}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 5: Extended Euclidean Algorithm - Example}
+\textbf{Description:} Compute $\gcd(85, 289)$ using Euclid's extended algorithm. Then compute $x$ and $y$ such that $85x + 289y = \gcd(85, 289)$.
+
+\begin{lstlisting}
+def extended_gcd(a, b):
+    """
+    Extended GCD implementation
+    
+    Args:
+        a: First integer
+        b: Second integer
+    
+    Returns:
+        Tuple (gcd, x, y)
+    """
+    if b == 0:
+        return a, 1, 0
+    
+    x0, x1 = 1, 0
+    y0, y1 = 0, 1
+    
+    while b != 0:
+        q = a // b
+        a, b = b, a % b
+        x0, x1 = x1, x0 - q * x1
+        y0, y1 = y1, y0 - q * y1
+    
+    return a, x0, y0
+
+# Example: gcd(85, 289)
+a, b = 85, 289
+gcd, x, y = extended_gcd(a, b)
+print(f"GCD({a}, {b}) = {gcd}")
+print(f"Coefficients: x = {x}, y = {y}")
+print(f"Verification: {a}*{x} + {b}*{y} = {a*x + b*y}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 6: Upper Bound for Euclidean Algorithm Steps}
+\textbf{Description:} Find an upper bound for the number of steps in the Euclidean algorithm.
+
+\begin{lstlisting}
+import math
+
+def euclidean_algorithm_steps(a, b):
+    """
+    Apply Euclidean algorithm and count steps
+    
+    Args:
+        a: First integer
+        b: Second integer
+    
+    Returns:
+        Tuple (gcd, number_of_steps)
+    """
+    a, b = abs(a), abs(b)
+    steps = 0
+    
+    while b != 0:
+        a, b = b, a % b
+        steps += 1
+    
+    return a, steps
+
+def upper_bound_steps(a, b):
+    """
+    Calculate upper bound using Lame's theorem
+    The number of steps <= 5 * number_of_digits
+    
+    Args:
+        a: First integer
+        b: Second integer
+    
+    Returns:
+        Upper bound on number of steps
+    """
+    min_val = min(abs(a), abs(b))
+    digits = len(str(min_val)) if min_val > 0 else 1
+    return 5 * digits
+
+# Example usage
+a, b = 85, 289
+gcd, steps = euclidean_algorithm_steps(a, b)
+bound = upper_bound_steps(a, b)
+print(f"GCD({a}, {b}) = {gcd}")
+print(f"Actual steps: {steps}")
+print(f"Upper bound (Lame's theorem): {bound}")
+print(f"Verification: {steps} <= {bound}: {steps <= bound}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 7: GCD Property}
+\textbf{Description:} Show that if $m$ and $n$ are integers such that $(m, n) = 1$, then $(m+n, m-n) = 1$ or $2$.
+
+\begin{lstlisting}
+def gcd(a, b):
+    """
+    Calculate GCD of two numbers
+    
+    Args:
+        a: First integer
+        b: Second integer
+    
+    Returns:
+        GCD of a and b
+    """
+    a, b = abs(a), abs(b)
+    while b != 0:
+        a, b = b, a % b
+    return a
+
+def verify_gcd_property(m, n):
+    """
+    Verify that if gcd(m,n)=1, then gcd(m+n, m-n) = 1 or 2
+    
+    Args:
+        m: First integer
+        n: Second integer
+    
+    Returns:
+        Boolean indicating if property holds
+    """
+    if gcd(m, n) != 1:
+        print(f"gcd({m}, {n}) != 1. Skipping.")
+        return False
+    
+    result_gcd = gcd(m + n, m - n)
+    is_valid = result_gcd in [1, 2]
+    
+    print(f"m = {m}, n = {n}")
+    print(f"gcd({m}, {n}) = {gcd(m, n)}")
+    print(f"gcd({m}+{n}, {m}-{n}) = gcd({m+n}, {m-n}) = {result_gcd}")
+    print(f"Result is 1 or 2: {is_valid}\n")
+    
+    return is_valid
+
+# Test with multiple examples
+print("Verifying: If gcd(m,n)=1, then gcd(m+n, m-n) = 1 or 2\n")
+test_pairs = [(5, 3), (7, 2), (11, 4), (13, 6)]
+for m, n in test_pairs:
+    verify_gcd_property(m, n)
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\newpage
+
+% ==================== LAB-3 ====================
+\section{LAB-3: Diophantine Equations and Advanced Divisibility}
+
+\subsection{Question 1: Diophantine Equations}
+\textbf{Description:} Write a Python program to determine all solutions in the integers of the following Diophantine equations:
+\begin{enumerate}
+    \item $56x + 72y = 40$
+    \item $24x + 138y = 18$
+\end{enumerate}
+
+\begin{lstlisting}
+def gcd(a, b):
+    """Calculate GCD"""
+    a, b = abs(a), abs(b)
+    while b != 0:
+        a, b = b, a % b
+    return a
+
+def extended_gcd(a, b):
+    """Extended GCD - returns (gcd, x, y)"""
+    if b == 0:
+        return a, 1, 0
+    
+    x0, x1 = 1, 0
+    y0, y1 = 0, 1
+    
+    while b != 0:
+        q = a // b
+        a, b = b, a % b
+        x0, x1 = x1, x0 - q * x1
+        y0, y1 = y1, y0 - q * y1
+    
+    return a, x0, y0
+
+def solve_diophantine(a, b, c):
+    """
+    Solve linear Diophantine equation: ax + by = c
+    Returns: (x0, y0) - particular solution, or None if no solution
+    General solution: x = x0 + (b/gcd)*t, y = y0 - (a/gcd)*t
+    
+    Args:
+        a, b, c: Coefficients of the equation ax + by = c
+    
+    Returns:
+        Tuple (x0, y0) or None if no integer solution exists
+    """
+    g = gcd(a, b)
+    
+    if c % g != 0:
+        return None  # No solution
+    
+    _, x0, y0 = extended_gcd(a, b)
+    x0 *= c // g
+    y0 *= c // g
+    
+    return x0, y0
+
+# Solve equation 1: 56x + 72y = 40
+print("Equation 1: 56x + 72y = 40")
+solution = solve_diophantine(56, 72, 40)
+if solution:
+    x0, y0 = solution
+    g = gcd(56, 72)
+    print(f"Particular solution: x0 = {x0}, y0 = {y0}")
+    print(f"General solution: x = {x0} + {72//g}*t, y = {y0} - {56//g}*t")
+    print(f"Verification: 56*{x0} + 72*{y0} = {56*x0 + 72*y0}\n")
+else:
+    print("No integer solution exists\n")
+
+# Solve equation 2: 24x + 138y = 18
+print("Equation 2: 24x + 138y = 18")
+solution = solve_diophantine(24, 138, 18)
+if solution:
+    x0, y0 = solution
+    g = gcd(24, 138)
+    print(f"Particular solution: x0 = {x0}, y0 = {y0}")
+    print(f"General solution: x = {x0} + {138//g}*t, y = {y0} - {24//g}*t")
+    print(f"Verification: 24*{x0} + 138*{y0} = {24*x0 + 138*y0}\n")
+else:
+    print("No integer solution exists\n")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 2: Euclidean Algorithm for Two Integers}
+\textbf{Description:} Given two integers, write a program that uses the Euclidean algorithm to find their greatest common divisor.
+
+\begin{lstlisting}
+def euclidean_gcd(a, b):
+    """
+    Find GCD using Euclidean Algorithm
+    
+    Args:
+        a: First integer
+        b: Second integer
+    
+    Returns:
+        GCD of a and b
+    """
+    a, b = abs(a), abs(b)
+    steps = []
+    
+    while b != 0:
+        quotient = a // b
+        remainder = a % b
+        steps.append(f"{a} = {b} * {quotient} + {remainder}")
+        a, b = b, remainder
+    
+    return a, steps
+
+# Example usage
+a, b = 1071, 462
+gcd_value, steps = euclidean_gcd(a, b)
+
+print(f"Finding GCD of {a} and {b}:")
+for step in steps:
+    print(step)
+print(f"\nGCD({a}, {b}) = {gcd_value}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 3: GCD of Multiple Integers}
+\textbf{Description:} Given a set of more than two integers, write a program to find their greatest common divisor.
+
+\begin{lstlisting}
+from functools import reduce
+
+def gcd(a, b):
+    """Calculate GCD of two numbers"""
+    a, b = abs(a), abs(b)
+    while b != 0:
+        a, b = b, a % b
+    return a
+
+def gcd_multiple(numbers):
+    """
+    Find GCD of multiple numbers
+    
+    Args:
+        numbers: List of integers
+    
+    Returns:
+        GCD of all numbers
+    """
+    if not numbers:
+        return None
+    
+    return reduce(gcd, numbers)
+
+# Example usage
+numbers = [48, 64, 80, 96]
+result = gcd_multiple(numbers)
+print(f"GCD of {numbers} = {result}")
+
+numbers2 = [100, 150, 200, 250]
+result2 = gcd_multiple(numbers2)
+print(f"GCD of {numbers2} = {result2}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 4: Check Divisibility by 10}
+\textbf{Description:} You are provided an array A of size N that contains non-negative integers. Write a program to determine whether the number that is formed by selecting the last digit of all the N numbers is divisible by 10.
+
+\begin{lstlisting}
+def last_digit_divisible_by_10(arr):
+    """
+    Form number from last digits and check divisibility by 10
+    
+    Args:
+        arr: Array of non-negative integers
+    
+    Returns:
+        Tuple (formed_number, is_divisible_by_10)
+    """
+    last_digits = ''.join(str(num % 10) for num in arr)
+    formed_number = int(last_digits)
+    is_divisible = formed_number % 10 == 0
+    
+    return formed_number, is_divisible
+
+# Example usage
+array1 = [12, 23, 34, 45]
+num1, divisible1 = last_digit_divisible_by_10(array1)
+print(f"Array: {array1}")
+print(f"Last digits: {num1}")
+print(f"Divisible by 10: {divisible1}\n")
+
+array2 = [10, 20, 30, 40]
+num2, divisible2 = last_digit_divisible_by_10(array2)
+print(f"Array: {array2}")
+print(f"Last digits: {num2}")
+print(f"Divisible by 10: {divisible2}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 5: Minimum Operations for Divisibility by 3}
+\textbf{Description:} You have two non-negative integers A and B. In one operation, you can do either $A := |A - B|$ or $B := |A - B|$. Find the minimum number of operations after which at least one integer becomes divisible by 3.
+
+\begin{lstlisting}
+def min_operations_for_divisibility_by_3(A, B):
+    """
+    Find minimum operations to make at least one number divisible by 3
+    
+    Args:
+        A: First non-negative integer
+        B: Second non-negative integer
+    
+    Returns:
+        Minimum number of operations
+    """
+    visited = set()
+    queue = [(A, B, 0)]
+    
+    while queue:
+        a, b, ops = queue.pop(0)
+        
+        if (a, b) in visited:
+            continue
+        visited.add((a, b))
+        
+        # Check if either is divisible by 3
+        if a % 3 == 0 or b % 3 == 0:
+            return ops
+        
+        # Try both operations
+        diff = abs(a - b)
+        if diff > 0:
+            queue.append((diff, b, ops + 1))
+            queue.append((a, diff, ops + 1))
+    
+    return -1  # Should not reach here for valid inputs
+
+# Example usage
+test_cases = [(6, 9), (10, 15), (7, 11)]
+for a, b in test_cases:
+    result = min_operations_for_divisibility_by_3(a, b)
+    print(f"A={a}, B={b}: Minimum operations = {result}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 6: Count Numbers Divisible by 2, 3, or 5}
+\textbf{Description:} Write a program that will read the numbers a and b and list how many numbers between a and b are divisible by either 2, 3 or 5.
+
+\begin{lstlisting}
+def count_divisible_by_2_3_or_5(a, b):
+    """
+    Count numbers in range [a, b] divisible by 2, 3, or 5
+    
+    Args:
+        a: Start of range
+        b: End of range
+    
+    Returns:
+        Count of numbers divisible by 2, 3, or 5
+    """
+    count = 0
+    numbers = []
+    
+    for num in range(a, b + 1):
+        if num % 2 == 0 or num % 3 == 0 or num % 5 == 0:
+            count += 1
+            numbers.append(num)
+    
+    return count, numbers
+
+# Example usage
+a, b = 1, 30
+count, numbers = count_divisible_by_2_3_or_5(a, b)
+print(f"Range: [{a}, {b}]")
+print(f"Count: {count}")
+print(f"Numbers: {numbers}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\newpage
+
+% ==================== LAB-4 ====================
+\section{LAB-4: Prime Numbers}
+
+\subsection{Question 1: Goldbach's Conjecture - Two Primes Sum}
+\textbf{Description:} Given a number (greater than 2), print two prime numbers whose sum will be equal to the given number.
+
+\begin{lstlisting}
+def is_prime(n):
+    """
+    Check if a number is prime
+    
+    Args:
+        n: Integer to check
+    
+    Returns:
+        True if prime, False otherwise
+    """
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def goldbach_conjecture(n):
+    """
+    Find two primes that sum to n (Goldbach's Conjecture)
+    
+    Args:
+        n: Even number greater than 2
+    
+    Returns:
+        Tuple (p, q) where p + q = n and both are prime, or -1
+    """
+    if n <= 2 or n % 2 != 0:
+        return -1
+    
+    for p in range(2, n // 2 + 1):
+        if is_prime(p) and is_prime(n - p):
+            return (p, n - p)
+    
+    return -1
+
+# Example usage
+test_numbers = [10, 20, 30, 100]
+for num in test_numbers:
+    result = goldbach_conjecture(num)
+    if result != -1:
+        print(f"{num} = {result[0]} + {result[1]}")
+    else:
+        print(f"No solution for {num}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 2: Twin Primes}
+\textbf{Description:} Given a positive integer n, find all twin primes less than n.
+
+\begin{lstlisting}
+def is_prime(n):
+    """Check if a number is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def find_twin_primes(n):
+    """
+    Find all twin primes less than n
+    Twin primes are pairs of primes that differ by 2
+    
+    Args:
+        n: Upper limit
+    
+    Returns:
+        List of twin prime pairs
+    """
+    twin_primes = []
+    
+    for p in range(2, n - 2):
+        if is_prime(p) and is_prime(p + 2):
+            twin_primes.append((p, p + 2))
+    
+    return twin_primes
+
+# Example usage
+n = 50
+twins = find_twin_primes(n)
+print(f"Twin primes less than {n}:")
+for p, q in twins:
+    print(f"({p}, {q})", end=" ")
+print()
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 3: Primes as Sums and Differences of Two Primes}
+\textbf{Description:} Find all primes that can be represented both as sums and differences of two primes.
+
+\begin{lstlisting}
+def is_prime(n):
+    """Check if a number is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def get_primes(limit):
+    """Get all primes up to limit"""
+    return [p for p in range(2, limit) if is_prime(p)]
+
+def find_primes_as_sum_and_diff(limit):
+    """
+    Find primes that can be represented as both sum and 
+    difference of two primes
+    
+    Args:
+        limit: Upper limit for search
+    
+    Returns:
+        List of such primes
+    """
+    primes = get_primes(limit)
+    result = []
+    
+    # Find primes that can be sum of two primes
+    sums = set()
+    for i, p1 in enumerate(primes):
+        for p2 in primes[i:]:
+            s = p1 + p2
+            if s < limit and is_prime(s):
+                sums.add(s)
+    
+    # Find primes that can be difference of two primes
+    diffs = set()
+    for i, p1 in enumerate(primes):
+        for p2 in primes[:i]:
+            d = abs(p1 - p2)
+            if d > 0 and d < limit and is_prime(d):
+                diffs.add(d)
+    
+    # Find intersection
+    result = sorted(list(sums & diffs))
+    return result
+
+# Example usage
+limit = 100
+result = find_primes_as_sum_and_diff(limit)
+print(f"Primes (< {limit}) as both sum and difference of primes:")
+print(result)
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 4: Prime Gaps}
+\textbf{Description:} Find three least positive integers n such that there are no primes between n and $n + 10$.
+
+\begin{lstlisting}
+def is_prime(n):
+    """Check if a number is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def find_prime_gaps(limit, gap_size, count):
+    """
+    Find numbers where there are no primes in the gap
+    
+    Args:
+        limit: Upper search limit
+        gap_size: Size of the gap (e.g., 10)
+        count: Number of such gaps to find
+    
+    Returns:
+        List of starting numbers
+    """
+    gaps = []
+    n = 2
+    
+    while len(gaps) < count and n < limit:
+        # Check if there are no primes between n and n+gap_size
+        has_prime = False
+        for p in range(n, n + gap_size + 1):
+            if is_prime(p):
+                has_prime = True
+                break
+        
+        if not has_prime:
+            gaps.append(n)
+        n += 1
+    
+    return gaps
+
+# Example usage
+gaps = find_prime_gaps(100000, 10, 3)
+print("First 3 numbers n where no primes exist between n and n+10:")
+for i, gap in enumerate(gaps, 1):
+    print(f"{i}. n = {gap}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 5: Solutions to $p^2 + 1 = q^2 + r^2$}
+\textbf{Description:} Find four solutions of the equation $p^2 + 1 = q^2 + r^2$ with primes $p$, $q$, and $r$.
+
+\begin{lstlisting}
+def is_prime(n):
+    """Check if a number is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def get_primes(limit):
+    """Get all primes up to limit"""
+    return [p for p in range(2, limit) if is_prime(p)]
+
+def find_solutions_p2_plus_1(limit, solution_count):
+    """
+    Find solutions to p^2 + 1 = q^2 + r^2 with primes p, q, r
+    
+    Args:
+        limit: Upper limit for search
+        solution_count: Number of solutions to find
+    
+    Returns:
+        List of solutions as tuples (p, q, r)
+    """
+    primes = get_primes(limit)
+    solutions = []
+    
+    for p in primes:
+        target = p * p + 1
+        
+        for q in primes:
+            if q * q > target:
+                break
+            
+            remainder = target - q * q
+            r_squared = remainder
+            
+            if r_squared > 0:
+                r = int(r_squared ** 0.5)
+                if r * r == r_squared and is_prime(r):
+                    solutions.append((p, q, r))
+                    if len(solutions) >= solution_count:
+                        return solutions
+    
+    return solutions
+
+# Example usage
+solutions = find_solutions_p2_plus_1(200, 4)
+print("Solutions to p^2 + 1 = q^2 + r^2 (p, q, r all prime):")
+for p, q, r in solutions:
+    print(f"p={p}, q={q}, r={r}: {p}^2 + 1 = {q}^2 + {r}^2")
+    print(f"  {p*p + 1} = {q*q + r*r} ✓")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 6: Prime Solutions of $p(p+1) + q(q+1) = r(r+1)$}
+\textbf{Description:} Find all prime solutions p, q, r of the equation $p(p+1) + q(q+1) = r(r+1)$.
+
+\begin{lstlisting}
+def is_prime(n):
+    """Check if a number is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def get_primes(limit):
+    """Get all primes up to limit"""
+    return [p for p in range(2, limit) if is_prime(p)]
+
+def find_prime_solutions_equation(limit):
+    """
+    Find all prime solutions (p, q, r) where p(p+1) + q(q+1) = r(r+1)
+    
+    Args:
+        limit: Upper limit for search
+    
+    Returns:
+        List of (p, q, r) tuples
+    """
+    primes = get_primes(limit)
+    solutions = []
+    
+    for p in primes:
+        for q in primes:
+            target = p * (p + 1) + q * (q + 1)
+            
+            # Check if target is of form r(r+1)
+            # Solve r^2 + r - target = 0
+            # r = (-1 + sqrt(1 + 4*target)) / 2
+            discriminant = 1 + 4 * target
+            sqrt_disc = int(discriminant ** 0.5)
+            
+            if sqrt_disc * sqrt_disc == discriminant:
+                if (sqrt_disc - 1) % 2 == 0:
+                    r = (sqrt_disc - 1) // 2
+                    if r > 0 and is_prime(r):
+                        solutions.append((p, q, r))
+    
+    return solutions
+
+# Example usage
+solutions = find_prime_solutions_equation(100)
+print("Prime solutions of p(p+1) + q(q+1) = r(r+1):")
+for p, q, r in solutions:
+    lhs = p * (p + 1) + q * (q + 1)
+    rhs = r * (r + 1)
+    print(f"p={p}, q={q}, r={r}: {lhs} = {rhs}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 7: Primes in Arithmetic Progression}
+\textbf{Description:} Find all primes p, q, and r such that the numbers p(p+1), q(q+1), r(r+1) form an increasing arithmetic progression.
+
+\begin{lstlisting}
+def is_prime(n):
+    """Check if a number is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def get_primes(limit):
+    """Get all primes up to limit"""
+    return [p for p in range(2, limit) if is_prime(p)]
+
+def find_arithmetic_progression(limit):
+    """
+    Find primes p, q, r where p(p+1), q(q+1), r(r+1) are in AP
+    
+    Args:
+        limit: Upper limit for search
+    
+    Returns:
+        List of (p, q, r) tuples
+    """
+    primes = get_primes(limit)
+    solutions = []
+    
+    for i, p in enumerate(primes):
+        for j, q in enumerate(primes):
+            if j <= i:
+                continue
+            for k, r in enumerate(primes):
+                if k <= j:
+                    continue
+                
+                val_p = p * (p + 1)
+                val_q = q * (q + 1)
+                val_r = r * (r + 1)
+                
+                # Check if in arithmetic progression
+                if val_q - val_p == val_r - val_q:
+                    solutions.append((p, q, r))
+    
+    return solutions
+
+# Example usage
+solutions = find_arithmetic_progression(50)
+print("Primes in arithmetic progression (p(p+1), q(q+1), r(r+1)):")
+for p, q, r in solutions:
+    val_p = p * (p + 1)
+    val_q = q * (q + 1)
+    val_r = r * (r + 1)
+    print(f"p={p}, q={q}, r={r}: {val_p}, {val_q}, {val_r}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 8: Prime-Rich Progressions}
+\textbf{Description:} Find all positive integers n such that each of the numbers n+1, n+3, n+7, n+9, n+13, and n+15 is a prime.
+
+\begin{lstlisting}
+def is_prime(n):
+    """Check if a number is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def find_prime_rich_progression(limit):
+    """
+    Find all n where n+1, n+3, n+7, n+9, n+13, n+15 are all prime
+    
+    Args:
+        limit: Upper limit to search
+    
+    Returns:
+        List of n values
+    """
+    offsets = [1, 3, 7, 9, 13, 15]
+    solutions = []
+    
+    for n in range(1, limit):
+        if all(is_prime(n + offset) for offset in offsets):
+            solutions.append(n)
+    
+    return solutions
+
+# Example usage
+solutions = find_prime_rich_progression(10000)
+print("Values of n where n+1, n+3, n+7, n+9, n+13, n+15 are all prime:")
+for n in solutions[:5]:  # Print first 5
+    print(f"n={n}: ", end="")
+    offsets = [1, 3, 7, 9, 13, 15]
+    primes = [n + offset for offset in offsets]
+    print(primes)
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 9: Sums of Fourth Powers}
+\textbf{Description:} Find five primes that are sums of two fourth powers of integers.
+
+\begin{lstlisting}
+def is_prime(n):
+    """Check if a number is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def find_primes_sum_of_fourth_powers(limit, count):
+    """
+    Find primes that are sum of two fourth powers
+    
+    Args:
+        limit: Upper limit for the fourth power base
+        count: Number of primes to find
+    
+    Returns:
+        List of (a, b, prime) tuples
+    """
+    solutions = []
+    candidates = set()
+    
+    for a in range(1, limit):
+        for b in range(a, limit):
+            value = a**4 + b**4
+            if is_prime(value):
+                candidates.add(value)
+    
+    # Convert to sorted list and get first 'count' items
+    result = sorted(list(candidates))[:count]
+    return result
+
+# Example usage
+primes = find_primes_sum_of_fourth_powers(20, 5)
+print("Primes that are sums of two fourth powers:")
+for prime in primes:
+    print(f"{prime}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 10: Consecutive Twin Prime Gaps}
+\textbf{Description:} Prove that there exist infinitely many pairs of consecutive primes that are not twin primes.
+
+\begin{lstlisting}
+def is_prime(n):
+    """Check if a number is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def get_primes(limit):
+    """Get all primes up to limit"""
+    return [p for p in range(2, limit) if is_prime(p)]
+
+def find_non_twin_prime_gaps(limit):
+    """
+    Find pairs of consecutive primes that are not twin primes (gap > 2)
+    
+    Args:
+        limit: Upper limit for search
+    
+    Returns:
+        List of (p1, p2, gap) tuples
+    """
+    primes = get_primes(limit)
+    gaps = []
+    
+    for i in range(len(primes) - 1):
+        gap = primes[i + 1] - primes[i]
+        if gap > 2:
+            gaps.append((primes[i], primes[i + 1], gap))
+    
+    return gaps
+
+# Example usage
+gaps = find_non_twin_prime_gaps(200)
+print("Pairs of consecutive primes that are NOT twin primes:")
+for p1, p2, gap in gaps[:10]:
+    print(f"({p1}, {p2}), gap = {gap}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 11: $n^2 - 1$ as Product of Three Different Primes}
+\textbf{Description:} Find five least positive integers n for which $n^2 - 1$ is a product of three different primes.
+
+\begin{lstlisting}
+def is_prime(n):
+    """Check if a number is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def prime_factorization(n):
+    """Get prime factorization with multiplicities"""
+    factors = {}
+    d = 2
+    
+    while d * d <= n:
+        while n % d == 0:
+            factors[d] = factors.get(d, 0) + 1
+            n //= d
+        d += 1
+    
+    if n > 1:
+        factors[n] = factors.get(n, 0) + 1
+    
+    return factors
+
+def count_distinct_prime_factors(n):
+    """Count distinct prime factors"""
+    return len(prime_factorization(n))
+
+def find_n_squared_minus_1_three_primes(limit, count):
+    """
+    Find n where n^2-1 is product of exactly 3 different primes
+    
+    Args:
+        limit: Search limit
+        count: Number of values to find
+    
+    Returns:
+        List of n values
+    """
+    solutions = []
+    
+    for n in range(2, limit):
+        value = n * n - 1
+        if count_distinct_prime_factors(value) == 3:
+            solutions.append(n)
+            if len(solutions) >= count:
+                break
+    
+    return solutions
+
+# Example usage
+solutions = find_n_squared_minus_1_three_primes(1000, 5)
+print("Five least n where n^2-1 is product of 3 different primes:")
+for n in solutions:
+    value = n * n - 1
+    factors = prime_factorization(value)
+    print(f"n={n}: n^2-1={value}, factors={factors}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 12: $n^2 + 1$ as Product of Three Different Primes}
+\textbf{Description:} Find five least positive integers n for which $n^2 + 1$ is a product of three different primes, and find a positive integer n for which $n^2 + 1$ is a product of three different odd primes.
+
+\begin{lstlisting}
+def is_prime(n):
+    """Check if a number is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def prime_factorization(n):
+    """Get prime factorization"""
+    factors = {}
+    d = 2
+    
+    while d * d <= n:
+        while n % d == 0:
+            factors[d] = factors.get(d, 0) + 1
+            n //= d
+        d += 1
+    
+    if n > 1:
+        factors[n] = factors.get(n, 0) + 1
+    
+    return factors
+
+def find_n_squared_plus_1(limit, count):
+    """
+    Find n where n^2+1 is product of exactly 3 different primes
+    
+    Args:
+        limit: Search limit
+        count: Number of values to find
+    
+    Returns:
+        List of n values
+    """
+    solutions = []
+    odd_solutions = []
+    
+    for n in range(1, limit):
+        value = n * n + 1
+        factors = prime_factorization(value)
+        
+        if len(factors) == 3:
+            solutions.append(n)
+        
+        # Check for three different odd primes
+        if len(factors) == 3 and all(p != 2 for p in factors.keys()):
+            odd_solutions.append(n)
+    
+    return solutions[:count], odd_solutions
+
+# Example usage
+solutions, odd_solutions = find_n_squared_plus_1(2000, 5)
+print("Five least n where n^2+1 is product of 3 different primes:")
+for n in solutions:
+    value = n * n + 1
+    factors = prime_factorization(value)
+    print(f"n={n}: n^2+1={value}, factors={factors}")
+
+print("\nExample with three different odd primes:")
+if odd_solutions:
+    n = odd_solutions[0]
+    value = n * n + 1
+    factors = prime_factorization(value)
+    print(f"n={n}: n^2+1={value}, factors={factors}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 13: Consecutive Integers with Two Prime Divisors}
+\textbf{Description:} Find five least positive integers n such that each of the numbers n, n+1, n+2 is a product of two different primes.
+
+\begin{lstlisting}
+def prime_factorization(n):
+    """Get prime factorization"""
+    factors = {}
+    d = 2
+    
+    while d * d <= n:
+        while n % d == 0:
+            factors[d] = factors.get(d, 0) + 1
+            n //= d
+        d += 1
+    
+    if n > 1:
+        factors[n] = factors.get(n, 0) + 1
+    
+    return factors
+
+def has_exactly_two_prime_divisors(n):
+    """Check if n is product of exactly 2 different primes"""
+    factors = prime_factorization(n)
+    return len(factors) == 2
+
+def find_consecutive_two_prime_products(limit, count):
+    """
+    Find n where n, n+1, n+2 each have exactly 2 different prime divisors
+    
+    Args:
+        limit: Search limit
+        count: Number of values to find
+    
+    Returns:
+        List of n values
+    """
+    solutions = []
+    
+    for n in range(2, limit):
+        if (has_exactly_two_prime_divisors(n) and 
+            has_exactly_two_prime_divisors(n + 1) and 
+            has_exactly_two_prime_divisors(n + 2)):
+            solutions.append(n)
+            if len(solutions) >= count:
+                break
+    
+    return solutions
+
+# Example usage
+solutions = find_consecutive_two_prime_products(10000, 5)
+print("Five least n where n, n+1, n+2 each have 2 different prime divisors:")
+for n in solutions:
+    print(f"n={n}:")
+    for i in range(3):
+        factors = prime_factorization(n + i)
+        print(f"  {n+i} = {factors}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 14: Numbers of Form $2^n - 1$}
+\textbf{Description:} Find all numbers of the form $2^n - 1$ with positive integer n not exceeding one million, which are products of two primes, and prove that if n is even and $> 4$, then $2^n - 1$ is a product of at least three integers $> 1$.
+
+\begin{lstlisting}
+def is_prime(n):
+    """Check if a number is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def prime_factorization(n):
+    """Get prime factorization"""
+    factors = {}
+    d = 2
+    
+    while d * d <= n and n > 1:
+        while n % d == 0:
+            factors[d] = factors.get(d, 0) + 1
+            n //= d
+        d += 1
+    
+    if n > 1:
+        factors[n] = factors.get(n, 0) + 1
+    
+    return factors
+
+def find_mersenne_two_primes():
+    """
+    Find 2^n - 1 that are products of exactly 2 primes (n <= 30)
+    
+    Returns:
+        List of (n, value, factors) tuples
+    """
+    solutions = []
+    
+    for n in range(1, 31):
+        try:
+            value = (1 << n) - 1  # 2^n - 1
+            factors = prime_factorization(value)
+            
+            # Count distinct primes
+            if len(factors) == 2:
+                solutions.append((n, value, factors))
+        except:
+            pass
+    
+    return solutions
+
+def count_factors_mersenne(n):
+    """
+    Count number of integer factors > 1 for 2^n - 1
+    """
+    if n % 2 == 0 and n > 4:
+        # For even n > 4, 2^n - 1 has at least 3 factors
+        return "≥ 3"
+    return None
+
+# Example usage
+solutions = find_mersenne_two_primes()
+print("Numbers 2^n-1 (n<=30) that are products of 2 primes:")
+for n, value, factors in solutions:
+    print(f"2^{n}-1 = {value}, factors = {factors}")
+
+print("\nFor even n > 4, 2^n-1 has at least 3 integer factors > 1:")
+for n in [6, 8, 10, 12]:
+    value = (1 << n) - 1
+    factors = prime_factorization(value)
+    print(f"2^{n}-1 = {value}, factors = {factors} ({len(factors)} distinct primes)")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\newpage
+
+% ==================== LAB-5 ====================
+\section{LAB-5: Advanced Prime Properties}
+
+\subsection{Question 1: Twin Primes (Revisited)}
+\textbf{Description:} Given a positive integer n, find all twin primes less than n.
+
+[See LAB-4, Question 2 for complete implementation]
+
+\subsection{Question 2: Primes of Form $n^2 + 1$}
+\textbf{Description:} Given a positive integer m, find the first m primes of the form $n^2 + 1$, where n is a positive integer.
+
+\begin{lstlisting}
+def is_prime(n):
+    """Check if a number is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def find_primes_of_form_n2_plus_1(m):
+    """
+    Find first m primes of the form n^2 + 1
+    
+    Args:
+        m: Number of primes to find
+    
+    Returns:
+        List of (n, prime) tuples
+    """
+    primes = []
+    n = 1
+    
+    while len(primes) < m:
+        candidate = n * n + 1
+        if is_prime(candidate):
+            primes.append((n, candidate))
+        n += 1
+    
+    return primes
+
+# Example usage
+m = 10
+primes = find_primes_of_form_n2_plus_1(m)
+print(f"First {m} primes of the form n^2 + 1:")
+for n, prime in primes:
+    print(f"n={n}: {n}^2 + 1 = {prime}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 3: Smallest Prime Factor of $n! + 1$}
+\textbf{Description:} Find the smallest prime factor of $n! + 1$ for all positive integers n not exceeding 20.
+
+\begin{lstlisting}
+import math
+
+def is_prime(n):
+    """Check if a number is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def smallest_prime_factor(n):
+    """
+    Find smallest prime factor of n
+    
+    Args:
+        n: Integer number
+    
+    Returns:
+        Smallest prime factor
+    """
+    if is_prime(n):
+        return n
+    
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0 and is_prime(i):
+            return i
+    
+    return n
+
+def find_spf_of_factorial_plus_1(limit):
+    """
+    Find smallest prime factor of n! + 1 for n <= limit
+    
+    Args:
+        limit: Upper limit for n
+    
+    Returns:
+        List of (n, n!, n!+1, spf) tuples
+    """
+    results = []
+    
+    for n in range(1, limit + 1):
+        factorial = math.factorial(n)
+        value = factorial + 1
+        spf = smallest_prime_factor(value)
+        results.append((n, factorial, value, spf))
+    
+    return results
+
+# Example usage
+results = find_spf_of_factorial_plus_1(20)
+print("Smallest prime factor of n! + 1 for n <= 20:\n")
+print(f"{'n':<3} {'n! + 1':<20} {'SPF':<10}")
+print("-" * 40)
+for n, fact, value, spf in results:
+    print(f"{n:<3} {value:<20} {spf:<10}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 4: Prime Testing via Trial Division}
+\textbf{Description:} Given a positive integer n, determine whether it is prime using trial division of the integer by all primes not exceeding its square root.
+
+\begin{lstlisting}
+def is_prime_trial_division(n, primes=None):
+    """
+    Check if n is prime using trial division by primes
+    
+    Args:
+        n: Integer to check
+        primes: List of primes to test (optional)
+    
+    Returns:
+        Boolean indicating if n is prime
+    """
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    # If primes not provided, generate them
+    if primes is None:
+        primes = []
+        for i in range(2, int(n**0.5) + 1):
+            if all(i % p != 0 for p in primes):
+                primes.append(i)
+    
+    # Trial division
+    for p in primes:
+        if p * p > n:
+            break
+        if n % p == 0:
+            return False
+    
+    return True
+
+def generate_primes_up_to(limit):
+    """Generate all primes up to limit using sieve"""
+    if limit < 2:
+        return []
+    
+    sieve = [True] * (limit + 1)
+    sieve[0] = sieve[1] = False
+    
+    for i in range(2, int(limit**0.5) + 1):
+        if sieve[i]:
+            for j in range(i*i, limit + 1, i):
+                sieve[j] = False
+    
+    return [i for i in range(limit + 1) if sieve[i]]
+
+# Example usage
+primes_up_to_100 = generate_primes_up_to(100)
+test_numbers = [97, 100, 121, 137, 200]
+
+print("Testing primality using trial division:\n")
+for num in test_numbers:
+    is_p = is_prime_trial_division(num, primes_up_to_100)
+    print(f"{num}: {'Prime' if is_p else 'Not Prime'}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Questions 5-6: GCD of Multiple Integers}
+\textbf{Description (Q5):} Given two integers, use the Euclidean algorithm to find their greatest common divisor.
+
+\textbf{Description (Q6):} Given a set of more than two integers, find their greatest common divisor.
+
+\begin{lstlisting}
+from functools import reduce
+
+def gcd(a, b):
+    """Calculate GCD of two numbers"""
+    a, b = abs(a), abs(b)
+    while b != 0:
+        a, b = b, a % b
+    return a
+
+def euclidean_gcd_two(a, b):
+    """
+    Find GCD of two integers using Euclidean algorithm
+    
+    Args:
+        a: First integer
+        b: Second integer
+    
+    Returns:
+        GCD of a and b
+    """
+    a, b = abs(a), abs(b)
+    steps = []
+    
+    while b != 0:
+        quotient = a // b
+        remainder = a % b
+        steps.append(f"{a} = {b} * {quotient} + {remainder}")
+        a, b = b, remainder
+    
+    return a, steps
+
+def gcd_multiple(numbers):
+    """
+    Find GCD of multiple numbers
+    
+    Args:
+        numbers: List of integers
+    
+    Returns:
+        GCD of all numbers
+    """
+    if not numbers:
+        return None
+    
+    return reduce(gcd, numbers)
+
+# Example usage for Q5 - Two integers
+print("Question 5: GCD of Two Integers")
+a, b = 1071, 462
+gcd_value, steps = euclidean_gcd_two(a, b)
+
+print(f"Finding GCD of {a} and {b}:")
+for step in steps:
+    print(step)
+print(f"GCD({a}, {b}) = {gcd_value}\n")
+
+# Example usage for Q6 - Multiple integers
+print("Question 6: GCD of Multiple Integers")
+numbers = [48, 64, 80, 96]
+result = gcd_multiple(numbers)
+print(f"GCD of {numbers} = {result}\n")
+
+numbers2 = [100, 150, 200, 250]
+result2 = gcd_multiple(numbers2)
+print(f"GCD of {numbers2} = {result2}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\newpage
+
+% ==================== LAB-7 ====================
+\section{LAB-7: Substitution and Transposition Ciphers}
+
+\subsection{Question 1: Caesar Cipher}
+\textbf{Description:} Substitution Technique - Caesar Cipher
+
+\begin{lstlisting}
+def caesar_cipher_encrypt(plaintext, shift):
+    """
+    Encrypt plaintext using Caesar Cipher
+    
+    Args:
+        plaintext: Text to encrypt
+        shift: Shift value (1-25)
+    
+    Returns:
+        Encrypted text
+    """
+    ciphertext = []
+    
+    for char in plaintext:
+        if char.isalpha():
+            if char.isupper():
+                shifted = chr((ord(char) - ord('A') + shift) % 26 + ord('A'))
+            else:
+                shifted = chr((ord(char) - ord('a') + shift) % 26 + ord('a'))
+            ciphertext.append(shifted)
+        else:
+            ciphertext.append(char)
+    
+    return ''.join(ciphertext)
+
+def caesar_cipher_decrypt(ciphertext, shift):
+    """
+    Decrypt ciphertext using Caesar Cipher
+    
+    Args:
+        ciphertext: Text to decrypt
+        shift: Shift value used in encryption
+    
+    Returns:
+        Decrypted text
+    """
+    return caesar_cipher_encrypt(ciphertext, -shift)
+
+# Example usage
+plaintext = "HELLO WORLD"
+shift = 3
+encrypted = caesar_cipher_encrypt(plaintext, shift)
+decrypted = caesar_cipher_decrypt(encrypted, shift)
+
+print(f"Plaintext: {plaintext}")
+print(f"Encrypted (shift {shift}): {encrypted}")
+print(f"Decrypted: {decrypted}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 2: Vigenere Cipher}
+\textbf{Description:} Polyalphabetic Cipher - Vigenere Cipher
+
+\begin{lstlisting}
+def vigenere_cipher_encrypt(plaintext, key):
+    """
+    Encrypt plaintext using Vigenere Cipher
+    
+    Args:
+        plaintext: Text to encrypt
+        key: Encryption key
+    
+    Returns:
+        Encrypted text
+    """
+    key = key.upper()
+    ciphertext = []
+    key_index = 0
+    
+    for char in plaintext:
+        if char.isalpha():
+            shift = ord(key[key_index % len(key)]) - ord('A')
+            if char.isupper():
+                encrypted_char = chr((ord(char) - ord('A') + shift) % 26 + ord('A'))
+            else:
+                encrypted_char = chr((ord(char) - ord('a') + shift) % 26 + ord('a'))
+            ciphertext.append(encrypted_char)
+            key_index += 1
+        else:
+            ciphertext.append(char)
+    
+    return ''.join(ciphertext)
+
+def vigenere_cipher_decrypt(ciphertext, key):
+    """
+    Decrypt ciphertext using Vigenere Cipher
+    
+    Args:
+        ciphertext: Text to decrypt
+        key: Decryption key
+    
+    Returns:
+        Decrypted text
+    """
+    key = key.upper()
+    plaintext = []
+    key_index = 0
+    
+    for char in ciphertext:
+        if char.isalpha():
+            shift = ord(key[key_index % len(key)]) - ord('A')
+            if char.isupper():
+                decrypted_char = chr((ord(char) - ord('A') - shift) % 26 + ord('A'))
+            else:
+                decrypted_char = chr((ord(char) - ord('a') - shift) % 26 + ord('a'))
+            plaintext.append(decrypted_char)
+            key_index += 1
+        else:
+            plaintext.append(char)
+    
+    return ''.join(plaintext)
+
+# Example usage
+plaintext = "HELLO WORLD"
+key = "KEY"
+encrypted = vigenere_cipher_encrypt(plaintext, key)
+decrypted = vigenere_cipher_decrypt(encrypted, key)
+
+print(f"Plaintext: {plaintext}")
+print(f"Key: {key}")
+print(f"Encrypted: {encrypted}")
+print(f"Decrypted: {decrypted}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 3: Rail Fence Cipher}
+\textbf{Description:} Transposition Technique - Rail Fence Cipher
+
+\begin{lstlisting}
+def rail_fence_cipher_encrypt(plaintext, rails):
+    """
+    Encrypt plaintext using Rail Fence Cipher
+    
+    Args:
+        plaintext: Text to encrypt
+        rails: Number of rails
+    
+    Returns:
+        Encrypted text
+    """
+    fence = [[] for _ in range(rails)]
+    rail = 0
+    direction = 1  # 1 for down, -1 for up
+    
+    for char in plaintext:
+        fence[rail].append(char)
+        
+        if rail == 0:
+            direction = 1
+        elif rail == rails - 1:
+            direction = -1
+        
+        rail += direction
+    
+    return ''.join(''.join(row) for row in fence)
+
+def rail_fence_cipher_decrypt(ciphertext, rails):
+    """
+    Decrypt ciphertext using Rail Fence Cipher
+    
+    Args:
+        ciphertext: Text to decrypt
+        rails: Number of rails
+    
+    Returns:
+        Decrypted text
+    """
+    fence = [[] for _ in range(rails)]
+    rail = 0
+    direction = 1
+    
+    # Mark positions
+    for _ in ciphertext:
+        fence[rail].append(None)
+        
+        if rail == 0:
+            direction = 1
+        elif rail == rails - 1:
+            direction = -1
+        
+        rail += direction
+    
+    # Fill in the ciphertext
+    index = 0
+    for i in range(rails):
+        for j in range(len(fence[i])):
+            fence[i][j] = ciphertext[index]
+            index += 1
+    
+    # Read off in zigzag pattern
+    plaintext = []
+    rail = 0
+    direction = 1
+    
+    for _ in ciphertext:
+        plaintext.append(fence[rail].pop(0))
+        
+        if rail == 0:
+            direction = 1
+        elif rail == rails - 1:
+            direction = -1
+        
+        rail += direction
+    
+    return ''.join(plaintext)
+
+# Example usage
+plaintext = "HELLOWORLD"
+rails = 3
+encrypted = rail_fence_cipher_encrypt(plaintext, rails)
+decrypted = rail_fence_cipher_decrypt(encrypted, rails)
+
+print(f"Plaintext: {plaintext}")
+print(f"Rails: {rails}")
+print(f"Encrypted: {encrypted}")
+print(f"Decrypted: {decrypted}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\newpage
+
+% ==================== LAB-8 ====================
+\section{LAB-8: Asymmetric Cryptography and Hashing}
+
+\subsection{Question 1: RSA Encryption Scheme}
+\textbf{Description:} Implement RSA encryption/decryption with prime generation, key generation, and cryptanalysis.
+
+\begin{lstlisting}
+import random
+from math import gcd
+
+def is_prime(n, k=5):
+    """Miller-Rabin primality test"""
+    if n < 2:
+        return False
+    if n == 2 or n == 3:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    # Write n-1 as d * 2^r
+    r, d = 0, n - 1
+    while d % 2 == 0:
+        r += 1
+        d //= 2
+    
+    # Witness loop
+    for _ in range(k):
+        a = random.randrange(2, n - 1)
+        x = pow(a, d, n)
+        
+        if x == 1 or x == n - 1:
+            continue
+        
+        for _ in range(r - 1):
+            x = pow(x, 2, n)
+            if x == n - 1:
+                break
+        else:
+            return False
+    
+    return True
+
+def extended_gcd(a, b):
+    """Extended Euclidean Algorithm"""
+    if b == 0:
+        return a, 1, 0
+    
+    x0, x1 = 1, 0
+    y0, y1 = 0, 1
+    
+    while b != 0:
+        q = a // b
+        a, b = b, a % b
+        x0, x1 = x1, x0 - q * x1
+        y0, y1 = y1, y0 - q * y1
+    
+    return a, x0, y0
+
+def generate_large_prime(bits):
+    """Generate a large prime number"""
+    while True:
+        num = random.getrandbits(bits)
+        if is_prime(num):
+            return num
+
+def rsa_generate_keys(bits=512):
+    """
+    Generate RSA public and private keys
+    
+    Returns:
+        Tuple ((e, n), (d, n)) - public key and private key
+    """
+    p = generate_large_prime(bits // 2)
+    q = generate_large_prime(bits // 2)
+    
+    n = p * q
+    phi = (p - 1) * (q - 1)
+    
+    # Choose e
+    e = 65537
+    while gcd(e, phi) != 1:
+        e = random.randrange(2, phi)
+    
+    # Calculate d
+    _, d, _ = extended_gcd(e, phi)
+    d = d % phi
+    
+    return (e, n), (d, n)
+
+def rsa_encrypt(plaintext, public_key):
+    """Encrypt using RSA"""
+    e, n = public_key
+    ciphertext = pow(plaintext, e, n)
+    return ciphertext
+
+def rsa_decrypt(ciphertext, private_key):
+    """Decrypt using RSA"""
+    d, n = private_key
+    plaintext = pow(ciphertext, d, n)
+    return plaintext
+
+# Example usage
+print("RSA Encryption Scheme")
+print("=" * 50)
+
+# Generate keys
+public_key, private_key = rsa_generate_keys(512)
+e, n = public_key
+d, _ = private_key
+
+print(f"Public Key (e): {e}")
+print(f"Modulus (n): {n}")
+print(f"Private Key (d): {d}\n")
+
+# Encrypt and decrypt
+message = 12345
+ciphertext = rsa_encrypt(message, public_key)
+decrypted = rsa_decrypt(ciphertext, private_key)
+
+print(f"Original Message: {message}")
+print(f"Encrypted: {ciphertext}")
+print(f"Decrypted: {decrypted}")
+print(f"Verification: {message == decrypted}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 2: SHA-1 and MD5 Hashing}
+\textbf{Description:} Implement Secure Hashing Algorithm (SHA-1, MD5)
+
+\begin{lstlisting}
+import hashlib
+
+def compute_sha1(data):
+    """
+    Compute SHA-1 hash of data
+    
+    Args:
+        data: String or bytes to hash
+    
+    Returns:
+        Hexadecimal hash string
+    """
+    if isinstance(data, str):
+        data = data.encode('utf-8')
+    
+    return hashlib.sha1(data).hexdigest()
+
+def compute_md5(data):
+    """
+    Compute MD5 hash of data
+    
+    Args:
+        data: String or bytes to hash
+    
+    Returns:
+        Hexadecimal hash string
+    """
+    if isinstance(data, str):
+        data = data.encode('utf-8')
+    
+    return hashlib.md5(data).hexdigest()
+
+# Example usage
+messages = [
+    "Hello World",
+    "Python Cryptography",
+    "1234567890"
+]
+
+print("Hashing Examples")
+print("=" * 60)
+print(f"{'Message':<25} {'SHA-1':<45} {'MD5':<35}")
+print("-" * 60)
+
+for msg in messages:
+    sha1 = compute_sha1(msg)
+    md5 = compute_md5(msg)
+    print(f"{msg:<25} {sha1:<45} {md5:<35}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 3: HMAC (Hash-based Message Authentication Code)}
+\textbf{Description:} Implement MAC and HMAC
+
+\begin{lstlisting}
+import hashlib
+import hmac
+
+def compute_hmac_sha1(message, key):
+    """
+    Compute HMAC-SHA1
+    
+    Args:
+        message: Message to authenticate
+        key: Secret key
+    
+    Returns:
+        HMAC hexadecimal string
+    """
+    if isinstance(message, str):
+        message = message.encode('utf-8')
+    if isinstance(key, str):
+        key = key.encode('utf-8')
+    
+    return hmac.new(key, message, hashlib.sha1).hexdigest()
+
+def compute_hmac_md5(message, key):
+    """Compute HMAC-MD5"""
+    if isinstance(message, str):
+        message = message.encode('utf-8')
+    if isinstance(key, str):
+        key = key.encode('utf-8')
+    
+    return hmac.new(key, message, hashlib.md5).hexdigest()
+
+# Example usage
+message = "Important Message"
+key = "SecretKey123"
+
+hmac_sha1 = compute_hmac_sha1(message, key)
+hmac_md5 = compute_hmac_md5(message, key)
+
+print("HMAC Examples")
+print("=" * 60)
+print(f"Message: {message}")
+print(f"Key: {key}\n")
+print(f"HMAC-SHA1: {hmac_sha1}")
+print(f"HMAC-MD5: {hmac_md5}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\newpage
+
+% ==================== LAB-9 ====================
+\section{LAB-9: Elliptic Curve Cryptography}
+
+\subsection{Elliptic Curve Encryption and Decryption}
+\textbf{Description:} Implement Elliptic Curve Cryptography (ECC) for encryption and decryption
+
+\begin{lstlisting}
+import random
+
+class EllipticCurve:
+    """
+    Elliptic Curve: y^2 = x^3 + ax + b (mod p)
+    """
+    
+    def __init__(self, a, b, p):
+        """
+        Initialize elliptic curve
+        
+        Args:
+            a, b: Curve parameters
+            p: Prime modulus
+        """
+        self.a = a
+        self.b = b
+        self.p = p
+    
+    def is_on_curve(self, x, y):
+        """Check if point (x, y) is on the curve"""
+        return (y * y) % self.p == (x * x * x + self.a * x + self.b) % self.p
+    
+    def mod_inverse(self, a, m):
+        """Compute modular inverse using extended Euclidean algorithm"""
+        if a < 0:
+            a = (a % m + m) % m
+        
+        g, x, _ = self.extended_gcd(a, m)
+        if g != 1:
+            raise Exception('Modular inverse does not exist')
+        
+        return x % m
+    
+    def extended_gcd(self, a, b):
+        """Extended GCD"""
+        if b == 0:
+            return a, 1, 0
+        
+        g, y, x = self.extended_gcd(b, a % b)
+        return g, x, y - (a // b) * x
+    
+    def point_add(self, p1, p2):
+        """
+        Add two points on the elliptic curve
+        Point at infinity represented as None
+        """
+        if p1 is None:
+            return p2
+        if p2 is None:
+            return p1
+        
+        x1, y1 = p1
+        x2, y2 = p2
+        
+        if x1 == x2:
+            if y1 == y2:
+                # Point doubling
+                s = (3 * x1 * x1 + self.a) * self.mod_inverse(2 * y1, self.p)
+                s = s % self.p
+            else:
+                return None  # Point at infinity
+        else:
+            s = (y2 - y1) * self.mod_inverse(x2 - x1, self.p)
+            s = s % self.p
+        
+        x3 = (s * s - x1 - x2) % self.p
+        y3 = (s * (x1 - x3) - y1) % self.p
+        
+        return (x3, y3)
+    
+    def scalar_mult(self, k, point):
+        """Multiply point by scalar k (point doubling and adding)"""
+        if k == 0:
+            return None
+        
+        result = None
+        addend = point
+        
+        while k:
+            if k & 1:
+                result = self.point_add(result, addend)
+            addend = self.point_add(addend, addend)
+            k >>= 1
+        
+        return result
+
+# Example usage
+print("Elliptic Curve Cryptography")
+print("=" * 60)
+
+# Define curve: y^2 = x^3 + 2x + 3 (mod 97)
+curve = EllipticCurve(a=2, b=3, p=97)
+
+# Base point
+G = (3, 6)
+print(f"Curve: y^2 = x^3 + 2x + 3 (mod 97)")
+print(f"Base point G = {G}")
+print(f"G on curve: {curve.is_on_curve(G[0], G[1])}\n")
+
+# Alice's secret key
+a = 7
+A = curve.scalar_mult(a, G)
+print(f"Alice's private key: a = {a}")
+print(f"Alice's public key: A = {A}\n")
+
+# Bob's secret key
+b = 5
+B = curve.scalar_mult(b, G)
+print(f"Bob's private key: b = {b}")
+print(f"Bob's public key: B = {B}\n")
+
+# Shared secret
+S_A = curve.scalar_mult(a, B)
+S_B = curve.scalar_mult(b, A)
+
+print(f"Alice's shared secret: {S_A}")
+print(f"Bob's shared secret: {S_B}")
+print(f"Secrets match: {S_A == S_B}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\end{document}
