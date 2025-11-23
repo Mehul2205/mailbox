@@ -30,8 +30,14 @@
 \newcommand{\screenshotplaceholder}{
     \stepcounter{screenshotcounter}
     \vspace{0.3cm}
-    \textbf{Screenshot Output:} \\
-    \fbox{\parbox[c][2.5cm]{0.95\textwidth}{\centering\textit{[Insert screenshot-\padded{\thescreenshotcounter}{3}.png here]}\vfill}}
+    \textbf{Screenshot Output (screenshot-\padded{\thescreenshotcounter}{3}.png):} \\
+    \begin{center}
+    \IfFileExists{screenshot-\padded{\thescreenshotcounter}{3}.png}{%
+        \includegraphics[width=0.9\textwidth, height=5cm, keepaspectratio]{screenshot-\padded{\thescreenshotcounter}{3}.png}%
+    }{%
+        \fbox{\parbox[c][5cm]{0.88\textwidth}{\centering\textit{screenshot-\padded{\thescreenshotcounter}{3}.png not found}\vfill}}%
+    }
+    \end{center}
     \vspace{0.3cm}
 }
 
@@ -110,10 +116,7 @@ Python can be installed from \url{https://www.python.org/downloads/}. Choose the
 print("Hello World")
 \end{lstlisting}
 
-\textbf{Screenshot Output:} \\
-\fbox{\parbox[c][2.5cm]{0.95\textwidth}{\centering\textit{[Insert screenshot-001.png here]}\vfill}}
-
-\vspace{0.5cm}
+\screenshotplaceholder
 
 \subsection{Question 3: Check Divisibility}
 \textbf{Description:} Write a Python program to find whether $b \mid a$, where $b \neq 0$, and $a$ and $b$ are some integers.
