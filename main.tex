@@ -46,12 +46,13 @@
 
 \title{\textbf{Laboratory Solutions} \\ \large Number Theory and Cryptography}
 \author{}
-\date{\today}
+\date{}
 
 \begin{document}
 
 % ==================== FRONT PAGE ====================
 \thispagestyle{empty}
+\pagecolor[gray]{0.8}
 \begin{center}
 \vspace*{2cm}
 
@@ -65,7 +66,7 @@
 
 \vspace{2.5cm}
 
-{\LARGE \textbf{KASAK ( 252IS018 )}}\\
+{\LARGE \textbf{KASAK ( 252 IS018 )}}\\
 \vspace{0.5cm}
 {\large \textit{I SEMESTER M-TECH CSIS}}
 
@@ -84,6 +85,7 @@
 \vspace*{\fill}
 
 \end{center}
+\nopagecolor
 
 \newpage
 
@@ -1917,7 +1919,9 @@ print(f"GCD of {numbers2} = {result2}")
 % ==================== LAB-7 ====================
 \section{LAB-7: Substitution and Transposition Ciphers}
 
-\subsection{Question 1: Caesar Cipher}
+\subsection{Question 1: Substitution Techniques}
+
+\subsubsection{1.1 Caesar Cipher}
 \textbf{Description:} Substitution Technique - Caesar Cipher
 
 \begin{lstlisting}
@@ -1972,7 +1976,237 @@ print(f"Decrypted: {decrypted}")
 
 \screenshotplaceholder
 
-\subsection{Question 2: Vigenere Cipher}
+\subsubsection{1.2 Monoalphabetic Cipher - Affine Cipher}
+\textbf{Description:} Monoalphabetic Cipher - Affine Cipher
+
+\begin{lstlisting}
+def gcd(a, b):
+    """Calculate GCD"""
+    while b:
+        a, b = b, a % b
+    return a
+
+def mod_inverse(a, m):
+    """Find modular inverse using extended Euclidean algorithm"""
+    if gcd(a, m) != 1:
+        return None
+    
+    m0, x0, x1 = m, 0, 1
+    while a > 1:
+        q = a // m
+        m, a = a % m, m
+        x0, x1 = x1 - q * x0, x0
+    
+    return x1 % m0
+
+def affine_cipher_encrypt(plaintext, a, b):
+    """
+    Encrypt using Affine Cipher: E(x) = (ax + b) mod 26
+    
+    Args:
+        plaintext: Text to encrypt
+        a: Multiplier (must be coprime with 26)
+        b: Shift value
+    
+    Returns:
+        Encrypted text
+    """
+    if gcd(a, 26) != 1:
+        return None
+    
+    ciphertext = []
+    for char in plaintext.upper():
+        if char.isalpha():
+            x = ord(char) - ord('A')
+            encrypted_char = chr((a * x + b) % 26 + ord('A'))
+            ciphertext.append(encrypted_char)
+        else:
+            ciphertext.append(char)
+    
+    return ''.join(ciphertext)
+
+def affine_cipher_decrypt(ciphertext, a, b):
+    """
+    Decrypt using Affine Cipher: D(y) = a^(-1) * (y - b) mod 26
+    
+    Args:
+        ciphertext: Text to decrypt
+        a: Multiplier
+        b: Shift value
+    
+    Returns:
+        Decrypted text
+    """
+    a_inv = mod_inverse(a, 26)
+    if a_inv is None:
+        return None
+    
+    plaintext = []
+    for char in ciphertext.upper():
+        if char.isalpha():
+            y = ord(char) - ord('A')
+            decrypted_char = chr(a_inv * (y - b) % 26 + ord('A'))
+            plaintext.append(decrypted_char)
+        else:
+            plaintext.append(char)
+    
+    return ''.join(plaintext)
+
+# Example usage
+plaintext = "HELLO"
+a, b = 5, 8
+encrypted = affine_cipher_encrypt(plaintext, a, b)
+decrypted = affine_cipher_decrypt(encrypted, a, b)
+
+print(f"Plaintext: {plaintext}")
+print(f"Encrypted: {encrypted}")
+print(f"Decrypted: {decrypted}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsubsection{1.3 Playfair Cipher}
+\textbf{Description:} Playfair Cipher - Digraph substitution
+
+\begin{lstlisting}
+def create_playfair_matrix(key):
+    """Create Playfair cipher matrix from key"""
+    # Remove duplicates and create alphabet
+    seen = set()
+    matrix_str = ""
+    
+    for char in key.upper():
+        if char.isalpha() and char not in seen:
+            matrix_str += char
+            seen.add(char)
+    
+    # Add remaining letters (J is omitted)
+    for char in "ABCDEFGHIKLMNOPQRSTUVWXYZ":
+        if char not in seen:
+            matrix_str += char
+    
+    # Create 5x5 matrix
+    matrix = [list(matrix_str[i:i+5]) for i in range(0, 25, 5)]
+    return matrix
+
+def find_position(matrix, char):
+    """Find position of character in matrix"""
+    for i in range(5):
+        for j in range(5):
+            if matrix[i][j] == char:
+                return i, j
+    return None
+
+def playfair_encrypt(plaintext, key):
+    """Encrypt using Playfair cipher"""
+    matrix = create_playfair_matrix(key)
+    plaintext = plaintext.upper().replace('J', 'I')
+    
+    # Remove non-alphabetic and create digraphs
+    digraphs = []
+    text = ''.join(c for c in plaintext if c.isalpha())
+    
+    i = 0
+    while i < len(text):
+        if i + 1 < len(text):
+            digraphs.append(text[i:i+2])
+            i += 2
+        else:
+            digraphs.append(text[i] + 'X')
+            i += 1
+    
+    ciphertext = []
+    for digraph in digraphs:
+        r1, c1 = find_position(matrix, digraph[0])
+        r2, c2 = find_position(matrix, digraph[1])
+        
+        if r1 == r2:  # Same row
+            ciphertext.append(matrix[r1][(c1+1)%5])
+            ciphertext.append(matrix[r2][(c2+1)%5])
+        elif c1 == c2:  # Same column
+            ciphertext.append(matrix[(r1+1)%5][c1])
+            ciphertext.append(matrix[(r2+1)%5][c2])
+        else:  # Rectangle
+            ciphertext.append(matrix[r1][c2])
+            ciphertext.append(matrix[r2][c1])
+    
+    return ''.join(ciphertext)
+
+# Example usage
+plaintext = "HELLOWORLD"
+key = "SECRET"
+encrypted = playfair_encrypt(plaintext, key)
+print(f"Plaintext: {plaintext}")
+print(f"Key: {key}")
+print(f"Encrypted: {encrypted}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsubsection{1.4 Hill Cipher}
+\textbf{Description:} Hill Cipher - Matrix-based substitution
+
+\begin{lstlisting}
+import numpy as np
+
+def matrix_inverse_mod(matrix, mod):
+    """Find inverse of matrix modulo m"""
+    n = len(matrix)
+    det = int(round(np.linalg.det(matrix))) % mod
+    
+    # Find modular inverse of determinant
+    det_inv = pow(det, -1, mod)
+    
+    # Get adjugate matrix
+    adjugate = np.array([[matrix[1,1], -matrix[0,1]], 
+                         [-matrix[1,0], matrix[0,0]]])
+    
+    inverse = (det_inv * adjugate) % mod
+    return inverse
+
+def hill_cipher_encrypt(plaintext, key_matrix):
+    """
+    Encrypt using Hill Cipher
+    
+    Args:
+        plaintext: Text to encrypt
+        key_matrix: 2x2 encryption matrix
+    
+    Returns:
+        Encrypted text
+    """
+    plaintext = plaintext.upper().replace(' ', '')
+    
+    # Pad if necessary
+    if len(plaintext) % 2 != 0:
+        plaintext += 'X'
+    
+    ciphertext = []
+    for i in range(0, len(plaintext), 2):
+        # Create column vector
+        x = np.array([[ord(plaintext[i]) - ord('A')],
+                      [ord(plaintext[i+1]) - ord('A')]])
+        
+        # Multiply by key matrix mod 26
+        y = (key_matrix @ x) % 26
+        
+        ciphertext.append(chr(y[0][0] + ord('A')))
+        ciphertext.append(chr(y[1][0] + ord('A')))
+    
+    return ''.join(ciphertext)
+
+# Example usage
+plaintext = "HELP"
+key_matrix = np.array([[3, 3], [2, 5]])
+encrypted = hill_cipher_encrypt(plaintext, key_matrix)
+print(f"Plaintext: {plaintext}")
+print(f"Key Matrix:\n{key_matrix}")
+print(f"Encrypted: {encrypted}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsubsection{1.5 Vigenere Cipher}
 \textbf{Description:} Polyalphabetic Cipher - Vigenere Cipher
 
 \begin{lstlisting}
@@ -2048,7 +2282,363 @@ print(f"Decrypted: {decrypted}")
 
 \screenshotplaceholder
 
-\subsection{Question 3: Rail Fence Cipher}
+\subsubsection{1.6 Kasiski Method}
+\textbf{Description:} Kasiski Method - Finding key length in Vigenere cipher
+
+\begin{lstlisting}
+import math
+from collections import defaultdict
+
+def find_repeated_sequences(ciphertext, length=3):
+    """Find repeated sequences in ciphertext"""
+    sequences = defaultdict(list)
+    
+    for i in range(len(ciphertext) - length + 1):
+        seq = ciphertext[i:i+length]
+        sequences[seq].append(i)
+    
+    repeated = {seq: positions for seq, positions in sequences.items() 
+                if len(positions) > 1}
+    return repeated
+
+def gcd_multiple(numbers):
+    """Calculate GCD of multiple numbers"""
+    result = numbers[0]
+    for num in numbers[1:]:
+        result = math.gcd(result, num)
+    return result
+
+def kasiski_examination(ciphertext):
+    """
+    Perform Kasiski examination to find key length
+    
+    Args:
+        ciphertext: Encrypted text
+    
+    Returns:
+        Possible key length
+    """
+    repeated = find_repeated_sequences(ciphertext)
+    
+    distances = []
+    for seq, positions in repeated.items():
+        for i in range(len(positions) - 1):
+            distance = positions[i+1] - positions[i]
+            distances.append(distance)
+    
+    if distances:
+        key_length = gcd_multiple(distances)
+        return key_length
+    return None
+
+# Example usage
+ciphertext = "CHREEVOAHMAERATBDWSLMYTFEVQ"
+key_length = kasiski_examination(ciphertext)
+print(f"Ciphertext: {ciphertext}")
+print(f"Probable key length: {key_length}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsubsection{1.7 Autokey Cipher}
+\textbf{Description:} Autokey Cipher - Progressive polyalphabetic substitution
+
+\begin{lstlisting}
+def autokey_cipher_encrypt(plaintext, key):
+    """
+    Encrypt using Autokey Cipher
+    
+    Args:
+        plaintext: Text to encrypt
+        key: Initial key
+    
+    Returns:
+        Encrypted text
+    """
+    plaintext = plaintext.upper().replace(' ', '')
+    key = key.upper()
+    
+    # Create full key: key + plaintext
+    full_key = key + plaintext
+    full_key = full_key[:len(plaintext)]
+    
+    ciphertext = []
+    for i, char in enumerate(plaintext):
+        if char.isalpha():
+            shift = ord(full_key[i]) - ord('A')
+            encrypted_char = chr((ord(char) - ord('A') + shift) % 26 + ord('A'))
+            ciphertext.append(encrypted_char)
+        else:
+            ciphertext.append(char)
+    
+    return ''.join(ciphertext)
+
+def autokey_cipher_decrypt(ciphertext, key):
+    """
+    Decrypt using Autokey Cipher
+    
+    Args:
+        ciphertext: Text to decrypt
+        key: Initial key
+    
+    Returns:
+        Decrypted text
+    """
+    ciphertext = ciphertext.upper().replace(' ', '')
+    key = key.upper()
+    
+    plaintext = []
+    full_key = list(key)
+    
+    for i, char in enumerate(ciphertext):
+        if char.isalpha():
+            shift = ord(full_key[i]) - ord('A')
+            decrypted_char = chr((ord(char) - ord('A') - shift) % 26 + ord('A'))
+            plaintext.append(decrypted_char)
+            # Add decrypted character to key for next iteration
+            full_key.append(decrypted_char)
+        else:
+            plaintext.append(char)
+    
+    return ''.join(plaintext)
+
+# Example usage
+plaintext = "HELLOWORLD"
+key = "KEY"
+encrypted = autokey_cipher_encrypt(plaintext, key)
+decrypted = autokey_cipher_decrypt(encrypted, key)
+
+print(f"Plaintext: {plaintext}")
+print(f"Key: {key}")
+print(f"Encrypted: {encrypted}")
+print(f"Decrypted: {decrypted}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsubsection{1.8 One-Time Pad}
+\textbf{Description:} One-Time Pad - Perfect Secrecy Cipher
+
+\begin{lstlisting}
+import random
+
+def generate_one_time_pad(length):
+    """
+    Generate a random one-time pad
+    
+    Args:
+        length: Length of pad
+    
+    Returns:
+        Random pad as string
+    """
+    return ''.join(chr(random.randint(0, 25) + ord('A')) for _ in range(length))
+
+def one_time_pad_encrypt(plaintext, pad):
+    """
+    Encrypt using One-Time Pad
+    
+    Args:
+        plaintext: Text to encrypt
+        pad: One-time pad (must be >= length of plaintext)
+    
+    Returns:
+        Encrypted text
+    """
+    plaintext = plaintext.upper().replace(' ', '')
+    
+    if len(pad) < len(plaintext):
+        return None  # Pad too short
+    
+    ciphertext = []
+    for i, char in enumerate(plaintext):
+        if char.isalpha():
+            shift = ord(pad[i]) - ord('A')
+            encrypted_char = chr((ord(char) - ord('A') + shift) % 26 + ord('A'))
+            ciphertext.append(encrypted_char)
+    
+    return ''.join(ciphertext)
+
+def one_time_pad_decrypt(ciphertext, pad):
+    """
+    Decrypt using One-Time Pad
+    
+    Args:
+        ciphertext: Text to decrypt
+        pad: One-time pad used for encryption
+    
+    Returns:
+        Decrypted text
+    """
+    ciphertext = ciphertext.upper().replace(' ', '')
+    
+    plaintext = []
+    for i, char in enumerate(ciphertext):
+        if char.isalpha():
+            shift = ord(pad[i]) - ord('A')
+            decrypted_char = chr((ord(char) - ord('A') - shift) % 26 + ord('A'))
+            plaintext.append(decrypted_char)
+    
+    return ''.join(plaintext)
+
+# Example usage
+plaintext = "HELLOWORLD"
+pad = generate_one_time_pad(len(plaintext))
+encrypted = one_time_pad_encrypt(plaintext, pad)
+decrypted = one_time_pad_decrypt(encrypted, pad)
+
+print(f"Plaintext: {plaintext}")
+print(f"One-Time Pad: {pad}")
+print(f"Encrypted: {encrypted}")
+print(f"Decrypted: {decrypted}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsubsection{1.9 Vernam Cipher}
+\textbf{Description:} Vernam Cipher - XOR-based encryption
+
+\begin{lstlisting}
+def vernam_cipher_encrypt(plaintext, key):
+    """
+    Encrypt using Vernam Cipher (XOR encryption)
+    
+    Args:
+        plaintext: Text to encrypt
+        key: Encryption key (binary or text)
+    
+    Returns:
+        Encrypted text (hex format)
+    """
+    if isinstance(plaintext, str):
+        plaintext = plaintext.encode('utf-8')
+    if isinstance(key, str):
+        key = key.encode('utf-8')
+    
+    # Extend key to match plaintext length
+    key_extended = (key * (len(plaintext) // len(key) + 1))[:len(plaintext)]
+    
+    ciphertext = bytes(p ^ k for p, k in zip(plaintext, key_extended))
+    return ciphertext.hex()
+
+def vernam_cipher_decrypt(ciphertext_hex, key):
+    """
+    Decrypt using Vernam Cipher (XOR encryption)
+    
+    Args:
+        ciphertext_hex: Encrypted text in hex format
+        key: Decryption key (same as encryption key)
+    
+    Returns:
+        Decrypted text
+    """
+    ciphertext = bytes.fromhex(ciphertext_hex)
+    if isinstance(key, str):
+        key = key.encode('utf-8')
+    
+    # Extend key to match ciphertext length
+    key_extended = (key * (len(ciphertext) // len(key) + 1))[:len(ciphertext)]
+    
+    plaintext = bytes(c ^ k for c, k in zip(ciphertext, key_extended))
+    return plaintext.decode('utf-8')
+
+# Example usage
+plaintext = "HELLOWORLD"
+key = "SECRET"
+encrypted = vernam_cipher_encrypt(plaintext, key)
+decrypted = vernam_cipher_decrypt(encrypted, key)
+
+print(f"Plaintext: {plaintext}")
+print(f"Key: {key}")
+print(f"Encrypted (hex): {encrypted}")
+print(f"Decrypted: {decrypted}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsection{Question 2: Transposition Techniques}
+
+\subsubsection{2.1 Row Transposition Cipher}
+\textbf{Description:} Row Transposition Cipher - Columnar transposition
+
+\begin{lstlisting}
+def row_transposition_encrypt(plaintext, key):
+    """
+    Encrypt using Row Transposition Cipher
+    
+    Args:
+        plaintext: Text to encrypt
+        key: String key (determines column order)
+    
+    Returns:
+        Encrypted text
+    """
+    plaintext = plaintext.upper().replace(' ', '')
+    key_len = len(key)
+    
+    # Pad plaintext if necessary
+    if len(plaintext) % key_len != 0:
+        plaintext += 'X' * (key_len - len(plaintext) % key_len)
+    
+    # Create matrix
+    rows = len(plaintext) // key_len
+    matrix = [plaintext[i*key_len:(i+1)*key_len] for i in range(rows)]
+    
+    # Generate column order from key
+    key_order = sorted(range(key_len), key=lambda i: key[i])
+    
+    # Read columns in order
+    ciphertext = ''
+    for col_idx in key_order:
+        for row in matrix:
+            ciphertext += row[col_idx]
+    
+    return ciphertext
+
+def row_transposition_decrypt(ciphertext, key):
+    """
+    Decrypt using Row Transposition Cipher
+    
+    Args:
+        ciphertext: Text to decrypt
+        key: String key (same as encryption key)
+    
+    Returns:
+        Decrypted text
+    """
+    key_len = len(key)
+    rows = len(ciphertext) // key_len
+    
+    # Generate column order from key
+    key_order = sorted(range(key_len), key=lambda i: key[i])
+    
+    # Reconstruct matrix by placing columns
+    matrix = [[''] * key_len for _ in range(rows)]
+    
+    idx = 0
+    for col_idx in key_order:
+        for row in range(rows):
+            matrix[row][col_idx] = ciphertext[idx]
+            idx += 1
+    
+    plaintext = ''.join(''.join(row) for row in matrix)
+    return plaintext
+
+# Example usage
+plaintext = "WEAREDISCOVEREDSAVEYOURSELF"
+key = "SECRET"
+encrypted = row_transposition_encrypt(plaintext, key)
+decrypted = row_transposition_decrypt(encrypted, key)
+
+print(f"Plaintext: {plaintext}")
+print(f"Key: {key}")
+print(f"Encrypted: {encrypted}")
+print(f"Decrypted: {decrypted}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsubsection{2.2 Rail Fence Cipher}
 \textbf{Description:} Transposition Technique - Rail Fence Cipher
 
 \begin{lstlisting}
@@ -2143,12 +2733,513 @@ print(f"Decrypted: {decrypted}")
 
 \screenshotplaceholder
 
+\subsection{Question 3: Product Ciphers}
+
+\subsubsection{3.1 Two Substitutions}
+\textbf{Description:} Double Substitution - Apply two substitution ciphers in sequence
+
+\begin{lstlisting}
+def double_substitution_encrypt(plaintext, key1, key2):
+    """
+    Apply two substitution ciphers in sequence
+    
+    Args:
+        plaintext: Text to encrypt
+        key1: First substitution key (permutation)
+        key2: Second substitution key (permutation)
+    
+    Returns:
+        Encrypted text
+    """
+    # First substitution
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    intermediate = []
+    
+    for char in plaintext.upper():
+        if char in alphabet:
+            idx = alphabet.index(char)
+            intermediate.append(key1[idx])
+        else:
+            intermediate.append(char)
+    
+    intermediate_text = ''.join(intermediate)
+    
+    # Second substitution
+    ciphertext = []
+    for char in intermediate_text:
+        if char in alphabet:
+            idx = alphabet.index(char)
+            ciphertext.append(key2[idx])
+        else:
+            ciphertext.append(char)
+    
+    return ''.join(ciphertext)
+
+def double_substitution_decrypt(ciphertext, key1, key2):
+    """
+    Decrypt double substitution cipher
+    
+    Args:
+        ciphertext: Text to decrypt
+        key1: First substitution key
+        key2: Second substitution key
+    
+    Returns:
+        Decrypted text
+    """
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    
+    # Create inverse keys
+    key1_inv = [''] * 26
+    key2_inv = [''] * 26
+    
+    for i, char in enumerate(key1):
+        key1_inv[alphabet.index(char)] = alphabet[i]
+    
+    for i, char in enumerate(key2):
+        key2_inv[alphabet.index(char)] = alphabet[i]
+    
+    # Decrypt with second key inverse
+    intermediate = []
+    for char in ciphertext.upper():
+        if char in alphabet:
+            idx = alphabet.index(char)
+            intermediate.append(key2_inv[idx])
+        else:
+            intermediate.append(char)
+    
+    intermediate_text = ''.join(intermediate)
+    
+    # Decrypt with first key inverse
+    plaintext = []
+    for char in intermediate_text:
+        if char in alphabet:
+            idx = alphabet.index(char)
+            plaintext.append(key1_inv[idx])
+        else:
+            plaintext.append(char)
+    
+    return ''.join(plaintext)
+
+# Example usage
+plaintext = "HELLOWORLD"
+key1 = "BCDEFGHIJKLMNOPQRSTUVWXYZA"  # Caesar shift 1
+key2 = "DEFGHIJKLMNOPQRSTUVWXYZABC"  # Caesar shift 3
+
+encrypted = double_substitution_encrypt(plaintext, key1, key2)
+decrypted = double_substitution_decrypt(encrypted, key1, key2)
+
+print(f"Plaintext: {plaintext}")
+print(f"Key1: {key1}")
+print(f"Key2: {key2}")
+print(f"Encrypted: {encrypted}")
+print(f"Decrypted: {decrypted}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsubsection{3.2 Two Transpositions}
+\textbf{Description:} Double Transposition - Apply two transposition ciphers in sequence
+
+\begin{lstlisting}
+def column_transposition_single(text, key):
+    """Apply single column transposition"""
+    key_len = len(key)
+    rows = (len(text) + key_len - 1) // key_len
+    
+    # Pad text if necessary
+    text = text + 'X' * (rows * key_len - len(text))
+    
+    # Create matrix
+    matrix = [text[i*key_len:(i+1)*key_len] for i in range(rows)]
+    
+    # Generate column order
+    key_order = sorted(range(key_len), key=lambda i: key[i])
+    
+    # Read columns in order
+    result = ''
+    for col_idx in key_order:
+        for row in matrix:
+            result += row[col_idx]
+    
+    return result
+
+def double_transposition_encrypt(plaintext, key1, key2):
+    """
+    Apply two transposition ciphers in sequence
+    
+    Args:
+        plaintext: Text to encrypt
+        key1: First transposition key
+        key2: Second transposition key
+    
+    Returns:
+        Encrypted text
+    """
+    plaintext = plaintext.upper().replace(' ', '')
+    
+    # First transposition
+    intermediate = column_transposition_single(plaintext, key1)
+    
+    # Second transposition
+    ciphertext = column_transposition_single(intermediate, key2)
+    
+    return ciphertext
+
+def column_transposition_inv(text, key):
+    """Inverse of column transposition"""
+    key_len = len(key)
+    rows = len(text) // key_len
+    
+    # Generate column order
+    key_order = sorted(range(key_len), key=lambda i: key[i])
+    
+    # Rebuild matrix
+    matrix = [[''] * key_len for _ in range(rows)]
+    idx = 0
+    for col_idx in key_order:
+        for row in range(rows):
+            matrix[row][col_idx] = text[idx]
+            idx += 1
+    
+    return ''.join(''.join(row) for row in matrix)
+
+def double_transposition_decrypt(ciphertext, key1, key2):
+    """
+    Decrypt double transposition cipher
+    
+    Args:
+        ciphertext: Text to decrypt
+        key1: First transposition key
+        key2: Second transposition key
+    
+    Returns:
+        Decrypted text
+    """
+    # Decrypt with second key inverse
+    intermediate = column_transposition_inv(ciphertext, key2)
+    
+    # Decrypt with first key inverse
+    plaintext = column_transposition_inv(intermediate, key1)
+    
+    return plaintext
+
+# Example usage
+plaintext = "WEAREDISCOVEREDSAVEYOURSELF"
+key1 = "SECRET"
+key2 = "CIPHER"
+
+encrypted = double_transposition_encrypt(plaintext, key1, key2)
+decrypted = double_transposition_decrypt(encrypted, key1, key2)
+
+print(f"Plaintext: {plaintext}")
+print(f"Key1: {key1}")
+print(f"Key2: {key2}")
+print(f"Encrypted: {encrypted}")
+print(f"Decrypted: {decrypted}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsubsection{3.3 Substitution Followed by Transposition}
+\textbf{Description:} Product Cipher - Substitution followed by Transposition
+
+\begin{lstlisting}
+def substitution_cipher_apply(text, substitution_key):
+    """Apply substitution cipher"""
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    result = []
+    
+    for char in text.upper():
+        if char in alphabet:
+            idx = alphabet.index(char)
+            result.append(substitution_key[idx])
+        else:
+            result.append(char)
+    
+    return ''.join(result)
+
+def substitution_transposition_encrypt(plaintext, sub_key, trans_key):
+    """
+    Apply substitution followed by transposition
+    
+    Args:
+        plaintext: Text to encrypt
+        sub_key: Substitution key (permutation of alphabet)
+        trans_key: Transposition key
+    
+    Returns:
+        Encrypted text
+    """
+    plaintext = plaintext.upper().replace(' ', '')
+    
+    # First: Apply substitution
+    substituted = substitution_cipher_apply(plaintext, sub_key)
+    
+    # Second: Apply transposition
+    trans_len = len(trans_key)
+    rows = (len(substituted) + trans_len - 1) // trans_len
+    substituted = substituted + 'X' * (rows * trans_len - len(substituted))
+    
+    matrix = [substituted[i*trans_len:(i+1)*trans_len] for i in range(rows)]
+    trans_order = sorted(range(trans_len), key=lambda i: trans_key[i])
+    
+    ciphertext = ''
+    for col_idx in trans_order:
+        for row in matrix:
+            ciphertext += row[col_idx]
+    
+    return ciphertext
+
+def substitution_transposition_decrypt(ciphertext, sub_key, trans_key):
+    """
+    Decrypt substitution-transposition cipher
+    
+    Args:
+        ciphertext: Text to decrypt
+        sub_key: Substitution key
+        trans_key: Transposition key
+    
+    Returns:
+        Decrypted text
+    """
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    
+    # Create substitution inverse
+    sub_inv = [''] * 26
+    for i, char in enumerate(sub_key):
+        sub_inv[alphabet.index(char)] = alphabet[i]
+    
+    # First: Undo transposition
+    trans_len = len(trans_key)
+    rows = len(ciphertext) // trans_len
+    
+    trans_order = sorted(range(trans_len), key=lambda i: trans_key[i])
+    matrix = [[''] * trans_len for _ in range(rows)]
+    
+    idx = 0
+    for col_idx in trans_order:
+        for row in range(rows):
+            matrix[row][col_idx] = ciphertext[idx]
+            idx += 1
+    
+    transposed = ''.join(''.join(row) for row in matrix)
+    
+    # Second: Undo substitution
+    plaintext = []
+    for char in transposed:
+        if char in alphabet:
+            idx = alphabet.index(char)
+            plaintext.append(sub_inv[idx])
+        else:
+            plaintext.append(char)
+    
+    return ''.join(plaintext)
+
+# Example usage
+plaintext = "HELLOWORLD"
+sub_key = "BCDEFGHIJKLMNOPQRSTUVWXYZA"  # Caesar shift 1
+trans_key = "SECRET"
+
+encrypted = substitution_transposition_encrypt(plaintext, sub_key, trans_key)
+decrypted = substitution_transposition_decrypt(encrypted, sub_key, trans_key)
+
+print(f"Plaintext: {plaintext}")
+print(f"Substitution Key: {sub_key}")
+print(f"Transposition Key: {trans_key}")
+print(f"Encrypted: {encrypted}")
+print(f"Decrypted: {decrypted}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
 \newpage
 
 % ==================== LAB-8 ====================
 \section{LAB-8: Asymmetric Cryptography and Hashing}
 
-\subsection{Question 1: RSA Encryption Scheme}
+\subsection{Question 1: Cryptographic Techniques}
+
+\subsubsection{1a. Diffie-Hellman Key Exchange (DHE)}
+\textbf{Description:} Implement Diffie-Hellman Key Exchange
+
+\begin{lstlisting}
+def is_prime(n):
+    """Check if n is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def diffie_hellman_setup(p, g):
+    """
+    Setup Diffie-Hellman parameters
+    
+    Args:
+        p: Large prime number
+        g: Generator (primitive root modulo p)
+    
+    Returns:
+        Public parameters (p, g)
+    """
+    return p, g
+
+def diffie_hellman_key_generation(p, g, private_key):
+    """
+    Generate public key from private key
+    
+    Args:
+        p: Prime modulus
+        g: Generator
+        private_key: Secret key
+    
+    Returns:
+        Public key
+    """
+    return pow(g, private_key, p)
+
+def diffie_hellman_shared_secret(p, public_key, private_key):
+    """
+    Compute shared secret
+    
+    Args:
+        p: Prime modulus
+        public_key: Other party's public key
+        private_key: Own private key
+    
+    Returns:
+        Shared secret
+    """
+    return pow(public_key, private_key, p)
+
+# Example usage
+import random
+
+p = 23  # Small prime for demonstration
+g = 5   # Generator
+
+# Alice's keys
+alice_private = random.randint(2, p-2)
+alice_public = diffie_hellman_key_generation(p, g, alice_private)
+
+# Bob's keys
+bob_private = random.randint(2, p-2)
+bob_public = diffie_hellman_key_generation(p, g, bob_private)
+
+# Shared secrets
+alice_secret = diffie_hellman_shared_secret(p, bob_public, alice_private)
+bob_secret = diffie_hellman_shared_secret(p, alice_public, bob_private)
+
+print(f"Prime p: {p}, Generator g: {g}")
+print(f"Alice's private key: {alice_private}, public key: {alice_public}")
+print(f"Bob's private key: {bob_private}, public key: {bob_public}")
+print(f"Alice's shared secret: {alice_secret}")
+print(f"Bob's shared secret: {bob_secret}")
+print(f"Secrets match: {alice_secret == bob_secret}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsubsection{1b. ElGamal Encryption Scheme}
+\textbf{Description:} Implement ElGamal Encryption Scheme
+
+\begin{lstlisting}
+import random
+
+def is_prime(n):
+    """Check if n is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def elgamal_setup(p, g):
+    """
+    Setup ElGamal parameters
+    
+    Args:
+        p: Large prime
+        g: Generator
+    
+    Returns:
+        Public parameters
+    """
+    return p, g
+
+def elgamal_key_generation(p, g):
+    """Generate ElGamal key pair"""
+    x = random.randint(2, p-2)  # Private key
+    y = pow(g, x, p)  # Public key
+    return (y, p, g), x
+
+def elgamal_encrypt(plaintext, public_key):
+    """
+    Encrypt using ElGamal
+    
+    Args:
+        plaintext: Message to encrypt (integer)
+        public_key: (y, p, g)
+    
+    Returns:
+        Ciphertext (c1, c2)
+    """
+    y, p, g = public_key
+    k = random.randint(2, p-2)
+    c1 = pow(g, k, p)
+    c2 = (plaintext * pow(y, k, p)) % p
+    return c1, c2
+
+def elgamal_decrypt(ciphertext, private_key, public_key):
+    """
+    Decrypt using ElGamal
+    
+    Args:
+        ciphertext: (c1, c2)
+        private_key: x
+        public_key: (y, p, g)
+    
+    Returns:
+        Decrypted message
+    """
+    c1, c2 = ciphertext
+    y, p, g = public_key
+    plaintext = (c2 * pow(c1, p - 1 - private_key, p)) % p
+    return plaintext
+
+# Example usage
+p = 23
+g = 5
+
+public_key, private_key = elgamal_key_generation(p, g)
+message = 10
+
+ciphertext = elgamal_encrypt(message, public_key)
+decrypted = elgamal_decrypt(ciphertext, private_key, public_key)
+
+print(f"Public key: {public_key}")
+print(f"Private key: {private_key}")
+print(f"Message: {message}")
+print(f"Ciphertext: {ciphertext}")
+print(f"Decrypted: {decrypted}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsubsection{1c. RSA Encryption Scheme}
 \textbf{Description:} Implement RSA encryption/decryption with prime generation, key generation, and cryptanalysis.
 
 \begin{lstlisting}
@@ -2272,7 +3363,100 @@ print(f"Verification: {message == decrypted}")
 
 \screenshotplaceholder
 
-\subsection{Question 2: SHA-1 and MD5 Hashing}
+\subsubsection{1d. Pseudorandom Generation Based on RSA}
+\textbf{Description:} Pseudorandom number generation using RSA
+
+\begin{lstlisting}
+import random
+from math import gcd
+
+def is_prime(n, k=5):
+    """Miller-Rabin primality test"""
+    if n < 2:
+        return False
+    if n == 2 or n == 3:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    r, d = 0, n - 1
+    while d % 2 == 0:
+        r += 1
+        d //= 2
+    
+    for _ in range(k):
+        a = random.randrange(2, n - 1)
+        x = pow(a, d, n)
+        
+        if x == 1 or x == n - 1:
+            continue
+        
+        for _ in range(r - 1):
+            x = pow(x, 2, n)
+            if x == n - 1:
+                break
+        else:
+            return False
+    
+    return True
+
+def generate_rsa_primes(bits):
+    """Generate two distinct primes"""
+    p = random.getrandbits(bits)
+    while not is_prime(p):
+        p = random.getrandbits(bits)
+    
+    q = random.getrandbits(bits)
+    while not is_prime(q) or q == p:
+        q = random.getrandbits(bits)
+    
+    return p, q
+
+def rsa_prng_setup(bits=16):
+    """
+    Setup RSA-based PRNG
+    
+    Args:
+        bits: Bit length for primes
+    
+    Returns:
+        n, e, seed
+    """
+    p, q = generate_rsa_primes(bits)
+    n = p * q
+    e = 65537
+    seed = random.randint(2, n-1)
+    return n, e, seed
+
+def rsa_prng_next(state):
+    """
+    Generate next pseudorandom number using RSA
+    
+    Args:
+        state: (n, e, current_x)
+    
+    Returns:
+        (next_x, random_bit)
+    """
+    n, e, x = state
+    x_next = pow(x, e, n)
+    random_bit = x_next & 1  # Least significant bit
+    return (n, e, x_next), random_bit
+
+# Example usage
+n, e, seed = rsa_prng_setup(bits=16)
+state = (n, e, seed)
+
+print(f"RSA-PRNG Setup: n={n}, e={e}, seed={seed}")
+print("Generated random bits:")
+for i in range(10):
+    state, bit = rsa_prng_next(state)
+    print(f"Bit {i+1}: {bit}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsubsection{1e. SHA-1 and MD5 Hashing}
 \textbf{Description:} Implement Secure Hashing Algorithm (SHA-1, MD5)
 
 \begin{lstlisting}
@@ -2328,7 +3512,7 @@ for msg in messages:
 
 \screenshotplaceholder
 
-\subsection{Question 3: HMAC (Hash-based Message Authentication Code)}
+\subsubsection{1f. MAC and HMAC (Hash-based Message Authentication Code)}
 \textbf{Description:} Implement MAC and HMAC
 
 \begin{lstlisting}
@@ -2375,6 +3559,148 @@ print(f"Message: {message}")
 print(f"Key: {key}\n")
 print(f"HMAC-SHA1: {hmac_sha1}")
 print(f"HMAC-MD5: {hmac_md5}")
+\end{lstlisting}
+
+\screenshotplaceholder
+
+\subsubsection{1g. Digital Signature}
+\textbf{Description:} Implement Digital Signatures using ElGamal, Schnorr, and RSA
+
+\begin{lstlisting}
+import random
+import hashlib
+from math import gcd
+
+def is_prime(n):
+    """Check if n is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+# RSA Digital Signature
+def extended_gcd(a, b):
+    """Extended GCD"""
+    if b == 0:
+        return a, 1, 0
+    g, y, x = extended_gcd(b, a % b)
+    return g, x, y - (a // b) * x
+
+def rsa_sign(message, private_key):
+    """
+    RSA Digital Signature
+    
+    Args:
+        message: Message to sign (string)
+        private_key: (d, n)
+    
+    Returns:
+        Signature
+    """
+    d, n = private_key
+    # Hash the message
+    h = int(hashlib.sha256(message.encode()).hexdigest(), 16)
+    # Sign: signature = h^d mod n
+    signature = pow(h, d, n)
+    return signature
+
+def rsa_verify(message, signature, public_key):
+    """
+    Verify RSA Digital Signature
+    
+    Args:
+        message: Original message
+        signature: Signature to verify
+        public_key: (e, n)
+    
+    Returns:
+        Boolean indicating validity
+    """
+    e, n = public_key
+    h = int(hashlib.sha256(message.encode()).hexdigest(), 16)
+    # Verify: h == signature^e mod n
+    h_recovered = pow(signature, e, n)
+    return h == h_recovered
+
+# ElGamal Digital Signature
+def elgamal_sign(message, p, g, x):
+    """
+    ElGamal Digital Signature
+    
+    Args:
+        message: Message to sign
+        p: Prime
+        g: Generator
+        x: Private key
+    
+    Returns:
+        Signature (r, s)
+    """
+    m = int(hashlib.sha256(message.encode()).hexdigest(), 16)
+    
+    k = random.randint(2, p-2)
+    r = pow(g, k, p)
+    s_inv = (m - x * r) * pow(k, -1, p-1) % (p-1)
+    s = pow(s_inv, -1, p-1)
+    
+    return r, s
+
+def elgamal_verify(message, signature, p, g, y):
+    """
+    Verify ElGamal Digital Signature
+    
+    Args:
+        message: Original message
+        signature: (r, s)
+        p, g, y: Public parameters
+    
+    Returns:
+        Boolean indicating validity
+    """
+    r, s = signature
+    m = int(hashlib.sha256(message.encode()).hexdigest(), 16)
+    
+    v1 = (pow(y, r, p) * pow(r, s, p)) % p
+    v2 = pow(g, m, p)
+    
+    return v1 == v2
+
+# Example usage
+# RSA Digital Signature
+print("RSA Digital Signature")
+print("=" * 60)
+private_key_rsa = (61, 3233)  # (d, n)
+public_key_rsa = (17, 3233)   # (e, n)
+
+message = "Important Document"
+signature_rsa = rsa_sign(message, private_key_rsa)
+is_valid = rsa_verify(message, signature_rsa, public_key_rsa)
+
+print(f"Message: {message}")
+print(f"Signature: {signature_rsa}")
+print(f"Valid: {is_valid}\n")
+
+# ElGamal Digital Signature
+print("ElGamal Digital Signature")
+print("=" * 60)
+p = 23
+g = 5
+x = 6  # Private key
+y = pow(g, x, p)  # Public key
+
+signature_elgamal = elgamal_sign(message, p, g, x)
+is_valid_elgamal = elgamal_verify(message, signature_elgamal, p, g, y)
+
+print(f"Message: {message}")
+print(f"Signature: {signature_elgamal}")
+print(f"Valid: {is_valid_elgamal}")
 \end{lstlisting}
 
 \screenshotplaceholder
